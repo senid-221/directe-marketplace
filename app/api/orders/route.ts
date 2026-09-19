@@ -1,38 +1,55 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
 
-export async function GET(request: Request) {
-  const userId = new URL(request.url).searchParams.get("userId");
-  if (!userId) return NextResponse.json({ error: "userId is required" }, { status: 400 });
-  const orders = await prisma.order.findMany({ where: { userId }, include: { items: { include: { product: true } } }, orderBy: { createdAt: "desc" } });
-  return NextResponse.json(orders);
-}
+export async function POST() {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
 
-export async function POST(request: Request) {
-  const body = await request.json();
-  if (!body.userId || !Array.isArray(body.items) || !body.items.length) return NextResponse.json({ error: "userId and items are required" }, { status: 400 });
+  try {
+    const order = await prisma.$transaction(async tx => {
+      const cart = await tx.cartItem.findMany({
+        where: { userId: session.userId },
+        include: { product: true }
+      });
+      if (!cart.length) throw new Error("EMPTY_CART");
 
-  const productIds = body.items.map((x: { productId: string }) => x.productId);
-  const products = await prisma.product.findMany({ where: { id: { in: productIds }, published: true } });
-  const byId = new Map(products.map(p => [p.id, p]));
-  let total = 0;
+      for (const item of cart) {
+        if (!item.product.published || item.product.stock < item.quantity) throw new Error("STOCK_CHANGED");
+      }
 
-  const orderItems = body.items.map((x: { productId: string; quantity?: number }) => {
-    const product = byId.get(x.productId);
-    if (!product) throw new Error("Product not found");
-    const quantity = Math.max(1, Number(x.quantity || 1));
-    if (product.stock < quantity) throw new Error(`Insufficient stock for ${product.name}`);
-    total += Number(product.price) * quantity;
-    return { productId: product.id, sellerId: product.sellerId, quantity, unitPrice: product.price };
-  });
+      const total = cart.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0) + 3000;
+      const created = await tx.order.create({
+        data: {
+          userId: session.userId,
+          total,
+          status: "PENDING",
+          items: { create: cart.map(item => ({
+            productId: item.productId,
+            sellerId: item.product.sellerId,
+            quantity: item.quantity,
+            unitPrice: item.product.price
+          })) }
+        },
+        include: { items: true }
+      });
 
-  const order = await prisma.$transaction(async tx => {
-    for (const item of orderItems) {
-      const updated = await tx.product.updateMany({ where: { id: item.productId, stock: { gte: item.quantity } }, data: { stock: { decrement: item.quantity } } });
-      if (updated.count !== 1) throw new Error("Stock changed while ordering");
-    }
-    return tx.order.create({ data: { userId: body.userId, total, items: { create: orderItems } }, include: { items: true } });
-  });
+      for (const item of cart) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } }
+        });
+      }
+      await tx.cartItem.deleteMany({ where: { userId: session.userId } });
+      return created;
+    });
 
-  return NextResponse.json(order, { status: 201 });
+    return NextResponse.json({ ok: true, orderId: order.id });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "EMPTY_CART") return NextResponse.json({ error: "Your cart is empty" }, { status: 400 });
+    if (message === "STOCK_CHANGED") return NextResponse.json({ error: "One of your products is no longer available in that quantity." }, { status: 409 });
+    console.error("DIRECTE order creation failed:", error);
+    return NextResponse.json({ error: "Could not place order" }, { status: 500 });
+  }
 }
