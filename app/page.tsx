@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const categoryLinks = [
   ["📱","Phones","/category/phones"],
   ["💻","Computers","/category/computers"],
@@ -68,7 +70,7 @@ export default function HomePage() {
         <section>
           <div className="sectionHeader"><h2>Shop by category</h2><a href="/categories">View all</a></div>
           <div className="categories">
-            {categoryLinks.map(([icon,name,href]) => <a className="category" href={href} key={name}><div className="categoryIcon">{icon}</div>{name}</a>)}
+            {categoryLinks.map(([icon,name,href]) => <Link className="category" href={href} key={name}><div className="categoryIcon">{icon}</div>{name}</Link>)}
           </div>
         </section>
 
