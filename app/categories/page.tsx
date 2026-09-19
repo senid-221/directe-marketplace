@@ -16,15 +16,17 @@ const fallbackCategories = [
 
 export default async function CategoriesPage() {
   let categories = fallbackCategories;
+  let databaseReady = false;
 
   try {
     const rows = await prisma.category.findMany({
       where: { parentId: null },
-      include: { children: true, _count: { select: { products: true } } },
+      include: { _count: { select: { products: true } } },
       orderBy: { name: "asc" },
     });
 
     if (rows.length) {
+      databaseReady = true;
       categories = rows.map((category) => ({
         id: category.id,
         name: category.name,
@@ -40,13 +42,18 @@ export default async function CategoriesPage() {
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
       <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}>← Back to DIRECTE</Link>
       <div className="sectionHeader"><h1>All Categories</h1></div>
+      {!databaseReady && (
+        <div className="databaseNotice">
+          Categories are ready. Connect the DIRECTE Neon database and run the Prisma seed to show live product counts.
+        </div>
+      )}
       <div className="categoryPageGrid">
         {categories.map((category) => (
           <Link href={`/category/${category.slug}`} className="categoryPageCard" key={category.id}>
             <div className="categoryPageIcon">▦</div>
             <div>
               <strong>{category.name}</strong>
-              <div className="categoryCount">{category.count} products</div>
+              <div className="categoryCount">{category.count > 0 ? `${category.count} products` : "No products yet"}</div>
             </div>
           </Link>
         ))}
