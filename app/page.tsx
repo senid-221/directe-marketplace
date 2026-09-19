@@ -1,6 +1,12 @@
-const categories = [
-  ["📱","Phones"],["💻","Computers"],["👕","Fashion"],["🏠","Home"],
-  ["💄","Beauty"],["⚽","Sports"],["🪑","Furniture"],["➕","More"]
+const categoryLinks = [
+  ["📱","Phones","/category/phones"],
+  ["💻","Computers","/category/computers"],
+  ["👕","Fashion","/category/fashion"],
+  ["🏠","Home","/category/home"],
+  ["💄","Beauty","/category/beauty"],
+  ["⚽","Sports","/category/sports"],
+  ["🪑","Furniture","/category/furniture"],
+  ["➕","More","/categories"]
 ];
 
 const products = [
@@ -23,7 +29,7 @@ export default function HomePage() {
 
       <header className="header">
         <div className="headerInner">
-          <a href="#" className="brand"><img src="/directe-logo.svg" alt="DIRECTE" className="brandLogo" /></a>
+          <a href="/" className="brand"><img src="/directe-logo.svg" alt="DIRECTE" className="brandLogo" /></a>
 
           <label className="search" aria-label="Search products">
             <span>🔍</span>
@@ -38,9 +44,9 @@ export default function HomePage() {
         </div>
         <nav className="nav">
           <div className="navInner">
-            <a href="/categories">All Categories</a><a href="#">Flash Deals</a><a href="#">New Arrivals</a>
-            <a href="#">Best Sellers</a><a href="#">Fashion</a><a href="#">Electronics</a>
-            <a href="#">Home & Living</a><a href="#">Become a Seller</a>
+            <a href="/categories">All Categories</a><a href="/deals">Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
+            <a href="/best-sellers">Best Sellers</a><a href="/category/fashion">Fashion</a><a href="/category/electronics">Electronics</a>
+            <a href="/category/home">Home & Living</a><a href="/seller">Become a Seller</a>
           </div>
         </nav>
       </header>
@@ -60,14 +66,14 @@ export default function HomePage() {
         </section>
 
         <section>
-          <div className="sectionHeader"><h2>Shop by category</h2><a href="#">View all</a></div>
+          <div className="sectionHeader"><h2>Shop by category</h2><a href="/categories">View all</a></div>
           <div className="categories">
-            {categories.map(([icon,name]) => <a className="category" href="#" key={name}><div className="categoryIcon">{icon}</div>{name}</a>)}
+            {categoryLinks.map(([icon,name,href]) => <a className="category" href={href} key={name}><div className="categoryIcon">{icon}</div>{name}</a>)}
           </div>
         </section>
 
         <section className="flash">
-          <div className="sectionHeader"><h2>🔥 Flash Deals</h2><a href="#">See all deals</a></div>
+          <div className="sectionHeader"><h2>🔥 Flash Deals</h2><a href="/deals">See all deals</a></div>
           <div className="products">
             {products.slice(0,5).map(([icon,title,price,old,rating,discount]) => (
               <article className="card" key={title}>
@@ -84,7 +90,7 @@ export default function HomePage() {
         </section>
 
         <section>
-          <div className="sectionHeader"><h2>Recommended for you</h2><a href="#">View more</a></div>
+          <div className="sectionHeader"><h2>Recommended for you</h2><a href="/products">View more</a></div>
           <div className="products">
             {products.slice(5).map(([icon,title,price,old,rating,discount]) => (
               <article className="card" key={title}>
