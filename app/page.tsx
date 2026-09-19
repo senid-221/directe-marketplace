@@ -38,7 +38,7 @@ export default function HomePage() {
         </div>
         <nav className="nav">
           <div className="navInner">
-            <a href="#">All Categories</a><a href="#">Flash Deals</a><a href="#">New Arrivals</a>
+            <a href="https://akazionnect.com/#">All Categories</a><a href="#">Flash Deals</a><a href="#">New Arrivals</a>
             <a href="#">Best Sellers</a><a href="#">Fashion</a><a href="#">Electronics</a>
             <a href="#">Home & Living</a><a href="#">Become a Seller</a>
           </div>
