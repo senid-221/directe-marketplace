@@ -1,3 +1,4 @@
+import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
@@ -46,8 +47,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
           <div className="sellerBox"><strong>Seller</strong><div>{product.seller.storeName}</div><small>DIRECTE marketplace seller</small></div>
           <div className="productActions">
-            <Link href={product.stock > 0 ? `/cart?add=${product.slug}` : "#"} className="cta">Add to cart</Link>
-            <Link href={product.stock > 0 ? `/checkout?product=${product.slug}` : "#"} className="secondaryButton">Buy now</Link>
+            {product.stock > 0 ? <AddToCartButton productId={product.id} className="cta">Add to cart</AddToCartButton> : <button className="cta" disabled>Out of stock</button>}
+            <Link href={product.stock > 0 ? "/cart?buy="+product.slug : "#"} className="secondaryButton">Buy now</Link>
           </div>
         </section>
       </div>
