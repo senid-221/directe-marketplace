@@ -17,14 +17,14 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
   const { productId, quantity = 1 } = await request.json();
-  const product = await prisma.product.findFirst({ where: { id: productId, published: true } });
+  const product = await prisma.product.findFirst({ where: { OR: [{ id: productId }, { slug: productId }], published: true } });
   if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
   if (product.stock < quantity) return NextResponse.json({ error: "Not enough stock" }, { status: 400 });
 
   const item = await prisma.cartItem.upsert({
-    where: { userId_productId: { userId: session.userId, productId } },
+    where: { userId_productId: { userId: session.userId, productId: product.id } },
     update: { quantity: { increment: quantity } },
-    create: { userId: session.userId, productId, quantity }
+    create: { userId: session.userId, productId: product.id, quantity }
   });
   return NextResponse.json({ ok: true, item });
 }
