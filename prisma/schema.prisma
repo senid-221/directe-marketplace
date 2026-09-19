@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum SellerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  phone     String?  @unique
+  password  String?
+  role      UserRole @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  seller    Seller?
+  orders    Order[]
+  reviews   Review[]
+  addresses Address[]
+  cartItems CartItem[]
+}
+
+model Address {
+  id        String @id @default(cuid())
+  userId    String
+  province  String
+  district  String
+  sector    String
+  cell      String?
+  village   String?
+  details   String?
+  user      User @relation(fields:[userId], references:[id], onDelete:Cascade)
+}
+
+model Seller {
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  storeName   String
+  description String?
+  status      SellerStatus @default(PENDING)
+  commission  Decimal      @default(0)
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields:[userId], references:[id], onDelete:Cascade)
+  products    Product[]
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields:[parentId], references:[id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  sellerId    String
+  categoryId  String
+  name        String
+  slug        String      @unique
+  description String?
+  price       Decimal
+  oldPrice    Decimal?
+  stock       Int         @default(0)
+  rating      Decimal     @default(0)
+  reviewCount Int         @default(0)
+  published   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  seller      Seller      @relation(fields:[sellerId], references:[id])
+  category    Category    @relation(fields:[categoryId], references:[id])
+  images      ProductImage[]
+  orderItems  OrderItem[]
+  reviews     Review[]
+  cartItems   CartItem[]
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  position  Int @default(0)
+  product   Product @relation(fields:[productId], references:[id], onDelete:Cascade)
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int @default(1)
+  user    User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  product Product @relation(fields:[productId], references:[id])
+  @@unique([userId, productId])
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  total      Decimal
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  user       User       @relation(fields:[userId], references:[id])
+  items      OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  sellerId  String
+  quantity  Int
+  unitPrice Decimal
+  order     Order   @relation(fields:[orderId], references:[id], onDelete:Cascade)
+  product   Product @relation(fields:[productId], references:[id])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields:[userId], references:[id])
+  product   Product @relation(fields:[productId], references:[id], onDelete:Cascade)
+}
