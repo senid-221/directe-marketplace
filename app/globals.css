@@ -243,3 +243,6 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
   .portalTop{align-items:flex-start;}
   .stats{grid-template-columns:1fr 1fr;}
 }
+
+.brandLogo{width:150px;height:auto;display:block;}
+@media(max-width:680px){.brandLogo{width:124px;}}
