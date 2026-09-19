@@ -8,7 +8,7 @@ export default function AddToCartButton({ productId, className="add", children="
   async function add() {
     setBusy(true);
     const r=await fetch("/api/cart",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId,quantity:1})});
-    if(r.status===401){ router.push("/account?next=/cart"); return; }
+    if(r.status===401){ router.push("/login?next=/cart"); return; }
     const data=await r.json();
     if(!r.ok){ alert(data.error || "Could not add product"); setBusy(false); return; }
     router.push("/cart");
