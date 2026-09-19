@@ -1,22 +1,22 @@
 import Link from "next/link";
+import CheckoutClient from "@/components/CheckoutClient";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ product?: string }> }) {
-  const { product: productSlug } = await searchParams;
-  const product = productSlug ? await prisma.product.findUnique({ where: { slug: productSlug }, include: { seller: true } }) : null;
-  const subtotal = product ? Number(product.price) : 0;
-  const delivery = product ? 3000 : 0;
-  const total = subtotal + delivery;
+export default async function CheckoutPage() {
+  const session = await getSession();
+  if (!session) return <main style={{maxWidth:700,margin:"0 auto",padding:"50px 20px"}}><div className="emptyState"><h1>Sign in to checkout</h1><p>Your cart and orders are connected to your DIRECTE account.</p><Link href="/login?next=/checkout" className="cta">Sign in</Link></div></main>;
+
+  const items = await prisma.cartItem.findMany({where:{userId:session.userId},include:{product:true}});
+  const subtotal=items.reduce((s,i)=>s+Number(i.product.price)*i.quantity,0);
+  const delivery=items.length?3000:0;
+  const total=subtotal+delivery;
   return <main style={{maxWidth:1100,margin:"0 auto",padding:"30px 20px"}}>
-    <Link href={product ? "/product/"+product.slug : "/products"} style={{color:"var(--directe-orange)",fontWeight:700}}>← Back</Link>
+    <Link href="/cart" style={{color:"var(--directe-orange)",fontWeight:700}}>← Back to cart</Link>
     <div className="sectionHeader"><h1>Checkout</h1></div>
-    {!product ? <div className="emptyState"><h2>No product selected</h2><p>Select a product before checkout.</p><Link href="/products" className="cta">Shop products</Link></div> :
-    <div className="checkoutLayout"><section className="checkoutCard"><h2>Delivery details</h2>
-      <div className="formGrid"><label>Full name<input placeholder="Your full name"/></label><label>Phone number<input placeholder="+250 7xx xxx xxx"/></label><label>Province<input placeholder="Kigali City"/></label><label>District<input placeholder="Gasabo"/></label><label>Sector<input placeholder="Kacyiru"/></label><label>Address<input placeholder="Street / village / landmark"/></label></div>
-      <h2>Payment method</h2><label className="paymentOption"><input type="radio" name="p" defaultChecked/> Mobile Money</label><label className="paymentOption"><input type="radio" name="p"/> Card</label>
-      <button className="cta" style={{marginTop:18,width:"100%"}}>Place order · RWF {total.toLocaleString()}</button></section>
-      <aside className="summary"><h2>Your order</h2><div><span>{product.name}</span><strong>RWF {subtotal.toLocaleString()}</strong></div><div><span>Delivery</span><strong>RWF {delivery.toLocaleString()}</strong></div><hr/><div className="grand"><span>Total</span><strong>RWF {total.toLocaleString()}</strong></div></aside></div>}
+    {!items.length ? <div className="emptyState"><h2>Your cart is empty</h2><Link href="/products" className="cta">Shop products</Link></div> :
+      <CheckoutClient items={items.map(i=>({name:i.product.name,quantity:i.quantity,price:Number(i.product.price)}))} subtotal={subtotal} delivery={delivery} total={total}/>}
   </main>;
 }
