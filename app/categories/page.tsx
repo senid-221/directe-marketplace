@@ -3,12 +3,38 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const fallbackCategories = [
+  { id: "phones", name: "Phones", slug: "phones", count: 0 },
+  { id: "computers", name: "Computers", slug: "computers", count: 0 },
+  { id: "fashion", name: "Fashion", slug: "fashion", count: 0 },
+  { id: "home", name: "Home", slug: "home", count: 0 },
+  { id: "beauty", name: "Beauty", slug: "beauty", count: 0 },
+  { id: "sports", name: "Sports", slug: "sports", count: 0 },
+  { id: "furniture", name: "Furniture", slug: "furniture", count: 0 },
+  { id: "electronics", name: "Electronics", slug: "electronics", count: 0 },
+];
+
 export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
-    where: { parentId: null },
-    include: { children: true, _count: { select: { products: true } } },
-    orderBy: { name: "asc" },
-  });
+  let categories = fallbackCategories;
+
+  try {
+    const rows = await prisma.category.findMany({
+      where: { parentId: null },
+      include: { children: true, _count: { select: { products: true } } },
+      orderBy: { name: "asc" },
+    });
+
+    if (rows.length) {
+      categories = rows.map((category) => ({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        count: category._count.products,
+      }));
+    }
+  } catch (error) {
+    console.error("DIRECTE categories load failed:", error);
+  }
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
@@ -20,17 +46,11 @@ export default async function CategoriesPage() {
             <div className="categoryPageIcon">▦</div>
             <div>
               <strong>{category.name}</strong>
-              <div className="categoryCount">{category._count.products} products</div>
+              <div className="categoryCount">{category.count} products</div>
             </div>
           </Link>
         ))}
       </div>
-      {categories.length === 0 && (
-        <div className="emptyState">
-          <h2>No categories yet</h2>
-          <p>Add categories from the DIRECTE Admin Portal to make them appear here.</p>
-        </div>
-      )}
     </main>
   );
 }
