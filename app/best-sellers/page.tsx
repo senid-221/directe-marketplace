@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Page(){return <main style={{maxWidth:1280,margin:"0 auto",padding:"40px 20px"}}><Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}>← DIRECTE</Link><div className="sectionHeader"><h1>Best Sellers</h1></div><div className="emptyState"><h2>Coming from the live catalog</h2><p>This section is ready for its database query and promotion rules.</p></div></main>}
