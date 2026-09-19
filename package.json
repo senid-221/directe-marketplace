@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "next": "15.5.25",
@@ -20,6 +21,7 @@
     "@types/react-dom": "^19",
     "typescript": "^5",
     "eslint": "^9",
-    "prisma": "^6.16.2"
+    "prisma": "^6.16.2",
+    "tsx": "^4.19.2"
   }
 }
