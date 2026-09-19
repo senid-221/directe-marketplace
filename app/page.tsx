@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="footerInner">
           <div><h3>DIRECTE</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
           <div><h3>Shop</h3><a href="/categories">Categories</a><a href="/deals">Flash Deals</a><a href="/best-sellers">Best Sellers</a></div>
-          <div><h3>Sell</h3><a href="#">Become a Seller</a><a href="#">Seller Center</a><a href="#">Seller Support</a></div>
+          <div><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><a href="#">Seller Center</a><a href="#">Seller Support</a></div>
           <div><h3>Help</h3><a href="#">Orders</a><a href="#">Delivery</a><a href="#">Contact Support</a></div>
         </div>
       </footer>
