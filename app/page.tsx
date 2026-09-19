@@ -23,7 +23,7 @@ export default function HomePage() {
 
       <header className="header">
         <div className="headerInner">
-          <a href="#" className="brand"><span className="brandMark">D</span>DIRECTE</a>
+          <a href="#" className="brand"><img src="/directe-logo.svg" alt="DIRECTE" className="brandLogo" /></a>
 
           <label className="search" aria-label="Search products">
             <span>🔍</span>
