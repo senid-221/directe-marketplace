@@ -1,3 +1,4 @@
+import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
 
 const categoryLinks = [
@@ -84,7 +85,7 @@ export default function HomePage() {
                   <Link href={"/product/"+slug} className="title">{title}</Link>
                   <div className="rating">★ {rating} · 100+ sold</div>
                   <div className="price">{price}<span className="old">{old}</span></div>
-                  <div className="cardFooter"><Link href={"/cart?add="+slug} className="add" style={{textAlign:"center"}}>Add to cart</Link><Link href={"/product/"+slug} className="favorite" style={{display:"grid",placeItems:"center"}}>♡</Link></div>
+                  <div className="cardFooter"><AddToCartButton productId={slug} /><Link href={"/product/"+slug} className="favorite" style={{display:"grid",placeItems:"center"}}>♡</Link></div>
                 </div>
               </article>
             ))}
