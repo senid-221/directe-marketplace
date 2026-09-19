@@ -5,21 +5,33 @@ export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: {
-      children: true,
-      products: {
-        where: { published: true },
-        include: { images: { orderBy: { position: "asc" } }, seller: true },
-        orderBy: { createdAt: "desc" },
-        take: 40,
+  let category = null;
+
+  try {
+    category = await prisma.category.findUnique({
+      where: { slug },
+      include: {
+        children: true,
+        products: {
+          where: { published: true },
+          include: { images: { orderBy: { position: "asc" } }, seller: true },
+          orderBy: { createdAt: "desc" },
+          take: 40,
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("DIRECTE category load failed:", error);
+  }
 
   if (!category) {
-    return <main className="emptyState" style={{margin:"60px auto",maxWidth:700}}><h1>Category not found</h1><Link href="/categories" className="cta">View categories</Link></main>;
+    return (
+      <main className="emptyState" style={{margin:"60px auto",maxWidth:700}}>
+        <h1>Category unavailable</h1>
+        <p>This category is not available right now. Please return to all categories.</p>
+        <Link href="/categories" className="cta">View categories</Link>
+      </main>
+    );
   }
 
   return (
