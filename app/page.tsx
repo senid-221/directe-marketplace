@@ -46,7 +46,7 @@ export default function HomePage() {
           <div className="navInner">
             <a href="/categories">All Categories</a><a href="/deals">Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
             <a href="/best-sellers">Best Sellers</a><a href="/category/fashion">Fashion</a><a href="/category/electronics">Electronics</a>
-            <a href="/category/home">Home & Living</a><a href="/seller">Become a Seller</a>
+            <a href="/category/home">Home & Living</a><a href="/seller/apply">Become a Seller</a>
           </div>
         </nav>
       </header>
