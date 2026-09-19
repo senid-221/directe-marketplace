@@ -257,3 +257,5 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 .emptyState{text-align:center;padding:70px 20px;border:1px dashed #ddd;border-radius:18px;background:var(--directe-surface);color:#666;}
 @media(max-width:900px){.categoryPageGrid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.categoryPageGrid{grid-template-columns:1fr;}}
+
+.databaseNotice{margin:0 0 18px;padding:12px 14px;border-radius:10px;background:#fff7f2;border:1px solid #ffd8c8;color:#8a3d18;font-size:13px;line-height:1.5;}
