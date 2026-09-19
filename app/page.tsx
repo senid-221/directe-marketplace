@@ -16,13 +16,11 @@ const products = [
   ["📱","Smartphone 128GB","RWF 289,000","RWF 349,000","4.8","-17%","smartphone-128gb"],
   ["💻","Slim Laptop 15.6 inch","RWF 579,000","RWF 699,000","4.7","-17%","slim-laptop-156"],
   ["👟","Unisex Running Shoes","RWF 39,000","RWF 52,000","4.6","-25%","unisex-running-shoes"],
-  ["🎧","Wireless Headphones","RWF 24,500","RWF 35,000","4.8","-30%","wireless-headphones"],
-  ["👜","Classic Shoulder Bag","RWF 28,000","RWF 40,000","4.5","-30%","classic-shoulder-bag"],
-  ["⌚","Smart Watch","RWF 32,000","RWF 45,000","4.6","-29%","smart-watch"],
+  ["💡","Home LED Lamp","RWF 12,000","RWF 16,000","4.5","-25%","home-led-lamp"],
+  ["💄","Body Oil 250ml","RWF 15,000","RWF 19,000","4.6","-21%","body-oil-250ml"],
+  ["⚽","Football Match Ball","RWF 18,000","RWF 24,000","4.7","-25%","football-match-ball"],
   ["🪑","Modern Office Chair","RWF 145,000","RWF 180,000","4.7","-19%","modern-office-chair"],
-  ["🔌","Power Extension Socket","RWF 9,900","RWF 14,000","4.4","-29%","power-extension-socket"],
-  ["☀️","Solar Panel Kit","RWF 185,000","RWF 230,000","4.6","-20%","solar-panel-kit"],
-  ["📺","43-inch Smart TV","RWF 399,000","RWF 470,000","4.8","-15%","43-inch-smart-tv"]
+  ["🎧","Wireless Headphones","RWF 24,500","RWF 35,000","4.8","-30%","wireless-headphones"]
 ];
 
 export default function HomePage() {
