@@ -33,7 +33,7 @@ export default function HomePage() {
 
           <label className="search" aria-label="Search products">
             <span>🔍</span>
-            <input placeholder="Search products, brands and more..." />
+            <form action="/search" className="searchForm"><input name="q" placeholder="Search products, brands and more..." /></form>
           </label>
 
           <div className="headerActions">
