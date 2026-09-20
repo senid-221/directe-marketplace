@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const subtotal = cart.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
+  const subtotal = cart.reduce((sum: number, item: (typeof cart)[number]) => sum + Number(item.product.price) * item.quantity, 0);
   const delivery = 3000;
   const total = subtotal + delivery;
   const txRef = "AKZ-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9).toUpperCase();
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       userId: session.userId,
       total,
       status: "PENDING",
-      items: { create: cart.map((item) => ({ productId: item.productId, sellerId: item.product.sellerId, quantity: item.quantity, unitPrice: item.product.price })) },
+      items: { create: cart.map((item: (typeof cart)[number]) => ({ productId: item.productId, sellerId: item.product.sellerId, quantity: item.quantity, unitPrice: item.product.price })) },
       payment: { create: { txRef, method, amount: total, currency: "RWF", status: "PENDING", provider: "flutterwave" } },
     },
   });
