@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../lib/auth";
+import { productMedia } from "../lib/product-media";
 
 const prisma = new PrismaClient();
 
@@ -39,8 +40,10 @@ async function main() {
       create: { name, slug }
     });
 
-    await prisma.product.upsert({
-      where: { slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-") },
+    const productSlug = productName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    const product = await prisma.product.upsert({
+      where: { slug: productSlug },
       update: {
         stock: 50,
         published: true,
@@ -53,7 +56,7 @@ async function main() {
         sellerId: seller.id,
         categoryId: category.id,
         name: productName,
-        slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        slug: productSlug,
         description: `DIRECTE demo product in ${name}`,
         price,
         oldPrice,
@@ -63,6 +66,24 @@ async function main() {
         reviewCount: 25
       }
     });
+
+    const imageUrl = productMedia[productSlug];
+    if (imageUrl) {
+      const existingImage = await prisma.productImage.findFirst({
+        where: { productId: product.id, position: 0 }
+      });
+
+      if (!existingImage) {
+        await prisma.productImage.create({
+          data: {
+            productId: product.id,
+            url: imageUrl,
+            alt: product.name,
+            position: 0
+          }
+        });
+      }
+    }
   }
 }
 
