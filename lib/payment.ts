@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export async function verifyAndFinalizePayment(txRef: string, transactionId: string) {
@@ -31,7 +32,7 @@ export async function verifyAndFinalizePayment(txRef: string, transactionId: str
     return { ok: false, orderId: payment.orderId, status: tx?.status || "failed" };
   }
 
-  await prisma.$transaction(async (db) => {
+  await prisma.$transaction(async (db: Prisma.TransactionClient) => {
     const freshPayment = await db.payment.findUnique({ where: { id: payment.id } });
     if (freshPayment?.status === "SUCCESSFUL") return;
 
@@ -45,7 +46,7 @@ export async function verifyAndFinalizePayment(txRef: string, transactionId: str
 
     await db.payment.update({ where: { id: payment.id }, data: { transactionId: String(transactionId), status: "SUCCESSFUL" } });
     await db.order.update({ where: { id: payment.orderId }, data: { status: "PAID" } });
-    await db.cartItem.deleteMany({ where: { userId: payment.order.userId, productId: { in: payment.order.items.map((item) => item.productId) } } });
+    await db.cartItem.deleteMany({ where: { userId: payment.order.userId, productId: { in: payment.order.items.map((item: (typeof payment.order.items)[number]) => item.productId) } } });
   });
 
   return { ok: true, orderId: payment.orderId, status: "successful" as const };
