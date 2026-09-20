@@ -60,10 +60,12 @@ export async function PATCH(request: Request) {
     if (!order.delivery) return NextResponse.json({ error: "Delivery record not found." }, { status: 404 });
 
     const now = new Date();
-    const deliveryData = {\n      status: deliveryStatus,\n      ...(deliveryStatus === "ASSIGNED" ? { assignedAt: now } : {}),\n      ...(deliveryStatus === "PICKED_UP" ? { pickedUpAt: now } : {}),\n      ...(deliveryStatus === "DELIVERED" ? { deliveredAt: now } : {}),\n    };
-    if (deliveryStatus === "ASSIGNED") deliveryData.assignedAt = now;
-    if (deliveryStatus === "PICKED_UP") deliveryData.pickedUpAt = now;
-    if (deliveryStatus === "DELIVERED") deliveryData.deliveredAt = now;
+    const deliveryData = {
+      status: deliveryStatus,
+      ...(deliveryStatus === "ASSIGNED" ? { assignedAt: now } : {}),
+      ...(deliveryStatus === "PICKED_UP" ? { pickedUpAt: now } : {}),
+      ...(deliveryStatus === "DELIVERED" ? { deliveredAt: now } : {}),
+    };
 
     let orderStatus = order.status;
     if (deliveryStatus === "ASSIGNED") orderStatus = "PROCESSING";
