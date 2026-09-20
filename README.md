@@ -1,4 +1,4 @@
-# DIRECTE Marketplace
+# AkaziConnect Marketplace
 
 Rwanda-first multi-vendor marketplace platform.
 
@@ -6,7 +6,7 @@ Rwanda-first multi-vendor marketplace platform.
 - Next.js + TypeScript
 - PostgreSQL + Prisma
 - REST API routes
-- DIRECTE customer storefront
+- AkaziConnect customer storefront
 - Seller Center
 - Admin Portal
 
