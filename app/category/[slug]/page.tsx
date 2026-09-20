@@ -10,6 +10,21 @@ type CategoryChild = {
   slug: string;
 };
 
+type CategoryProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  rating: unknown;
+  price: unknown;
+  images: Array<{
+    url: string;
+    alt: string | null;
+  }>;
+  seller: {
+    storeName: string;
+  };
+};
+
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let category = null;
@@ -42,6 +57,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }
 
   const children: CategoryChild[] = category.children;
+  const products: CategoryProduct[] = category.products;
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
@@ -53,7 +69,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </div>
       )}
       <div className="products">
-        {category.products.map((product: (typeof category.products)[number]) => (
+        {products.map((product: CategoryProduct) => (
           <article className="card" key={product.id}>
             <Link href={`/product/${product.slug}`}>
               <div className="cardImage">{product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} /> : <img src={productMedia[product.slug] || productMedia["wireless-headphones"]} alt={product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} />}</div>
@@ -67,7 +83,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </article>
         ))}
       </div>
-      {category.products.length === 0 && (
+      {products.length === 0 && (
         <div className="emptyState"><h2>No products in this category yet</h2><p>Approved sellers can add products from Seller Center.</p></div>
       )}
     </main>
