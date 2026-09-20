@@ -10,6 +10,5 @@
 <path d="M196 308h39l12 16h116l-13 70H223l-27-86Zm28 29 9 29h91l5-29h-105Z" fill="#073f9e"/>
 <circle cx="250" cy="414" r="17" fill="#073f9e"/><circle cx="336" cy="414" r="17" fill="#073f9e"/>
 </g>
-<text x="235" y="151" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800" letter-spacing="-4" fill="#073f9e">Akazi</text>
-<text x="500" y="151" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800" letter-spacing="-4" fill="#ff5a16">Connect</text>
+<text x="235" y="151" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800" letter-spacing="-4" fill="#073f9e">AkaziConnect</text>
 </svg>
