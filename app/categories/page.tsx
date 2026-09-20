@@ -17,15 +17,15 @@ export default async function CategoriesPage() {
     categories = rows.map((category) => ({ id: category.id, name: category.name, slug: category.slug, count: category._count.products }));
   } catch (error) {
     databaseError = true;
-    console.error("DIRECTE categories load failed:", error);
+    console.error("AkaziConnect categories load failed:", error);
   }
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-      <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> Back to DIRECTE</Link>
+      <Link href="/" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> Back to AkaziConnect</Link>
       <div className="sectionHeader"><h1>All Categories</h1></div>
       {databaseError && (
-        <div className="databaseNotice">DIRECTE database is not connected. Set DATABASE_URL on Hostinger and run the Prisma migration and seed.</div>
+        <div className="databaseNotice">AkaziConnect database is not connected. Set DATABASE_URL on Hostinger and run the Prisma migration and seed.</div>
       )}
       <div className="categoryPageGrid">
         {categories.map((category) => (
@@ -36,7 +36,7 @@ export default async function CategoriesPage() {
         ))}
       </div>
       {!databaseError && categories.length === 0 && (
-        <div className="emptyState"><h2>No categories yet</h2><p>Run the DIRECTE Prisma seed after connecting Neon.</p></div>
+        <div className="emptyState"><h2>No categories yet</h2><p>Run the AkaziConnect Prisma seed after connecting Neon.</p></div>
       )}
     </main>
   );
