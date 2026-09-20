@@ -1,0 +1,6 @@
+"use client";
+import { useState } from "react";
+type Category={id:string;name:string;slug:string;count:number};
+export default function AdminCategoriesClient({initial}:{initial:Category[]}){const [items,setItems]=useState(initial);const [name,setName]=useState("");const [message,setMessage]=useState("");
+async function add(){const r=await fetch("/api/admin/categories",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name})});const d=await r.json();if(!r.ok){setMessage(d.error||"Could not add category.");return}setItems(v=>[...v,{id:d.category.id,name:d.category.name,slug:d.category.slug,count:0}].sort((a,b)=>a.name.localeCompare(b.name)));setName("");setMessage("Category added.");}
+return <div>{message&&<div className="sellerMessage">{message}</div>}<div className="adminCategoryAdd"><input value={name} onChange={e=>setName(e.target.value)} placeholder="New category name"/><button className="cta compactCta" onClick={add}>Add category</button></div><div className="panel"><table><thead><tr><th>Category</th><th>Slug</th><th>Products</th></tr></thead><tbody>{items.map(c=><tr key={c.id}><td><strong>{c.name}</strong></td><td>{c.slug}</td><td>{c.count}</td></tr>)}</tbody></table></div></div>}
