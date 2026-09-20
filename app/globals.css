@@ -255,8 +255,8 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
   .stats{grid-template-columns:1fr 1fr;}
 }
 
-.brandLogo{width:176px;height:48px;display:block;object-fit:contain;object-position:left center;}
-@media(max-width:680px){.brandLogo{width:172px;height:46px;}}
+.brandLogo{width:210px;height:auto;display:block;object-fit:contain;object-position:center;}
+@media(max-width:680px){.brandLogo{width:180px;height:auto;}}
 
 /* Keep the original AkaziConnect logo intact; only control its placement on auth pages. */
 .authCard .brand{width:100%;justify-content:center;}
