@@ -25,7 +25,7 @@ export async function POST() {
           userId: session.userId,
           total,
           status: "PENDING",
-          items: { create: cart.map(item => ({
+          items: { create: cart.map((item: (typeof cart)[number]) => ({
             productId: item.productId,
             sellerId: item.product.sellerId,
             quantity: item.quantity,
