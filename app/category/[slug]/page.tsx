@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { productMedia } from "@/lib/product-media";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {category.products.map((product) => (
           <article className="card" key={product.id}>
             <Link href={`/product/${product.slug}`}>
-              <div className="cardImage">{product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"cover"}} /> : "🛍️"}</div>
+              <div className="cardImage">{product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} /> : <img src={productMedia[product.slug] || productMedia["wireless-headphones"]} alt={product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} />}</div>
             </Link>
             <div className="cardBody">
               <div className="title">{product.name}</div>
