@@ -29,7 +29,7 @@ export default function HomePage() {
     <div className="shell">
       <header className="header">
         <div className="headerInner">
-          <a href="/" className="brand"><img src="/directe-logo.svg" alt="AkaziConnect" className="brandLogo" /></a>
+          <a href="/" className="brand"><img src="/akaziconnect-logo.svg" alt="AkaziConnect" className="brandLogo" /></a>
 
           <form action="/search" method="get" className="search" aria-label="Search products">
             <span className="material-symbols-outlined">search</span>
@@ -62,7 +62,7 @@ export default function HomePage() {
           </div>
           <div className="heroSide">
             <div className="promo"><div style={{fontSize:13,fontWeight:800}}><span className="material-symbols-outlined inlineIcon">local_fire_department</span> FLASH DEALS</div><div style={{fontSize:27,fontWeight:800,marginTop:8}}>Up to 50% off</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Limited-time marketplace offers</div></div>
-            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--directe-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on AkaziConnect</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
+            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--akaziconnect-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on AkaziConnect</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
           </div>
         </section>
 
