@@ -1,11 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [phoneMode, setPhoneMode] = useState(false);
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +38,7 @@ export default function LoginPage() {
         return;
       }
 
-      const next = searchParams.get("next") || "/account";
+      const next = new URLSearchParams(window.location.search).get("next") || "/account";
       router.replace(next);
       router.refresh();
     } catch {
