@@ -2,6 +2,7 @@ import BuyNowButton from "@/components/BuyNowButton";
 import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { productMedia } from "@/lib/product-media";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="productPage">
         <div>
           <div className="productMainImage">
-            {product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} /> : "🛍️"}
+            {product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} /> : <img src={productMedia[product.slug] || productMedia["wireless-headphones"]} alt={product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} />}
           </div>
           {product.images.length > 1 && (
             <div className="productThumbs">
