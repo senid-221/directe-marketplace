@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
@@ -50,7 +51,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
     }
 
-    const product = await prisma.$transaction(async (tx) => {
+    const product = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.productImage.deleteMany({ where: { productId: id } });
       return tx.product.update({
         where: { id },
