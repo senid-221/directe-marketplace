@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const plans = [
-  { id: "starter", name: "Starter", price: 50000, description: "For individuals starting a store on DIRECTE.", icon: "storefront", features: ["Up to 50 products", "Basic store tools", "Standard support"] },
+  { id: "starter", name: "Starter", price: 50000, description: "For individuals starting a store on AkaziConnect.", icon: "storefront", features: ["Up to 50 products", "Basic store tools", "Standard support"] },
   { id: "business", name: "Business", price: 150000, description: "For growing businesses with a larger catalog.", icon: "analytics", features: ["Up to 200 products", "Advanced store tools", "Priority support", "Basic analytics"], popular: true },
   { id: "plus", name: "Plus", price: 250000, description: "For established sellers with higher business needs.", icon: "workspace_premium", features: ["Unlimited products", "Advanced store tools", "Advanced analytics", "Dedicated support", "Featured store placement"] },
 ];
@@ -31,10 +31,10 @@ export default function SellerApplyPage() {
   return (
     <main className="sellerApply">
       <div className="sellerApplyTop">
-        <Link href="/" className="sellerBack"><span className="material-symbols-outlined inlineIcon">arrow_back</span> Back to DIRECTE</Link>
+        <Link href="/" className="sellerBack"><span className="material-symbols-outlined inlineIcon">arrow_back</span> Back to AkaziConnect</Link>
         <div className="sellerHero">
           <div className="sellerHeroIcon"><span className="material-symbols-outlined">storefront</span></div>
-          <div><div className="eyebrow">DIRECTE SELLER PROGRAM</div><h1>Become a Seller</h1><p>Choose a plan and grow your business on DIRECTE.</p></div>
+          <div><div className="eyebrow">AKAZICONNECT SELLER PROGRAM</div><h1>Become a Seller</h1><p>Choose a plan and grow your business on AkaziConnect.</p></div>
         </div>
       </div>
 
@@ -95,7 +95,7 @@ export default function SellerApplyPage() {
         <span className="material-symbols-outlined">lock</span>
         {submitted ? "Payment required before activation" : selected && paymentMethod ? `Continue to payment — ${selected.price.toLocaleString()} FRW` : selected ? "Choose a payment method" : "Choose a seller plan"}
       </button>
-      <p className="sellerNote"><span className="material-symbols-outlined">verified_user</span> Seller activation happens only after payment and DIRECTE approval.</p>
+      <p className="sellerNote"><span className="material-symbols-outlined">verified_user</span> Seller activation happens only after payment and AkaziConnect approval.</p>
     </main>
   );
 }
