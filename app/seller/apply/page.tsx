@@ -10,9 +10,29 @@ const plans = [
 ];
 
 const paymentMethods = [
-  { id: "mtn", name: "MTN Mobile Money", detail: "Pay securely using your MTN MoMo account." },
-  { id: "bank", name: "Banking", detail: "Pay by bank transfer or supported banking option." },
-  { id: "card", name: "Credit / Debit Card", detail: "Pay with Visa, Mastercard, or another supported card." },
+  {
+    id: "mtn",
+    name: "MTN Mobile Money",
+    detail: "Pay securely using your MTN MoMo account.",
+    logos: [
+      { src: "https://momoapi.mtn.co.rw/content/MoMo-flat-logo_1.png", alt: "MTN MoMo official logo" },
+    ],
+  },
+  {
+    id: "bank",
+    name: "Banking",
+    detail: "Pay by bank transfer or supported banking option.",
+    logos: [],
+  },
+  {
+    id: "card",
+    name: "Credit / Debit Card",
+    detail: "Pay with Visa or Mastercard.",
+    logos: [
+      { src: "https://corporate.visa.com/dam/VCOM/corporate/about-visa/images/visa-brand-mark-grid-800x450.jpg", alt: "Visa official brand mark" },
+      { src: "https://www.mastercard.com/content/dam/public/mastercardcom/na/us/en/large-assets/brandcenter/mc_symbol_92x58.png", alt: "Mastercard official symbol" },
+    ],
+  },
 ];
 
 export default function SellerApplyPage() {
@@ -81,7 +101,7 @@ export default function SellerApplyPage() {
                 return (
                   <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)}
                     style={{
-                      display: "flex", alignItems: "center", gap: 14, width: "100%",
+                      display: "flex", alignItems: "center", gap: 16, width: "100%",
                       textAlign: "left", padding: 16, borderRadius: 12,
                       border: active ? "2px solid var(--directe-orange)" : "1px solid var(--directe-border)",
                       background: active ? "#fff8f2" : "#fff", cursor: "pointer"
@@ -90,10 +110,28 @@ export default function SellerApplyPage() {
                       width: 20, height: 20, borderRadius: "50%", flex: "0 0 auto",
                       border: active ? "6px solid var(--directe-orange)" : "2px solid #aaa"
                     }} />
-                    <span>
+                    <span style={{ flex: 1 }}>
                       <strong>{method.name}</strong>
                       <small style={{ display: "block", marginTop: 3, color: "#666" }}>{method.detail}</small>
                     </span>
+                    {method.logos.length > 0 && (
+                      <span style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+                        {method.logos.map((logo) => (
+                          <img
+                            key={logo.src}
+                            src={logo.src}
+                            alt={logo.alt}
+                            style={{
+                              width: method.id === "mtn" ? 92 : 58,
+                              height: 38,
+                              objectFit: "contain",
+                              background: "#fff",
+                              borderRadius: 6,
+                            }}
+                          />
+                        ))}
+                      </span>
+                    )}
                   </button>
                 );
               })}
