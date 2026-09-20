@@ -20,7 +20,7 @@ export default async function SellerPage() {
     prisma.orderItem.findMany({ where: { sellerId: seller.id, order: { status: { notIn: ["CANCELLED", "REFUNDED"] } } }, select: { quantity: true, unitPrice: true } }),
   ]);
 
-  const revenue = sellerItems.reduce((sum, item) => sum + Number(item.unitPrice) * item.quantity, 0);
+  const revenue = sellerItems.reduce((sum: number, item: (typeof sellerItems)[number]) => sum + Number(item.unitPrice) * item.quantity, 0);
   const lowStock = products.filter((product) => product.stock <= 5).length;
 
   return <main className="portal"><SellerSidebar active="Dashboard" /><section className="portalMain">
