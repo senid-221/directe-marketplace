@@ -17,6 +17,6 @@ export default async function CartPage() {
   return <main style={{maxWidth:1100,margin:"0 auto",padding:"30px 20px"}}>
     <Link href="/products" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}>← Continue shopping</Link>
     <div className="sectionHeader"><h1>Shopping Cart</h1></div>
-    <CartClient initialItems={items.map(i=>({id:i.id,quantity:i.quantity,product:{id:i.product.id,name:i.product.name,slug:i.product.slug,price:Number(i.product.price),stock:i.product.stock,seller:i.product.seller.storeName,image:i.product.images[0]?.url || null}}))}/>
+    <CartClient initialItems={items.map((i: (typeof items)[number])=>({id:i.id,quantity:i.quantity,product:{id:i.product.id,name:i.product.name,slug:i.product.slug,price:Number(i.product.price),stock:i.product.stock,seller:i.product.seller.storeName,image:i.product.images[0]?.url || null}}))}/>
   </main>
 }
