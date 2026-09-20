@@ -19,7 +19,7 @@ export async function GET() {
   });
 
   return NextResponse.json({
-    products: products.map((product) => ({
+    products: products.map((product: (typeof products)[number]) => ({
       ...product,
       price: Number(product.price),
       oldPrice: product.oldPrice === null ? null : Number(product.oldPrice),
