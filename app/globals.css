@@ -381,3 +381,62 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 .sellerPayment{margin-top:28px}.sellerPayment>.sellerSectionHeading{text-align:center}.sellerPayment>.sellerSectionHeading h2{font-size:22px}.sellerPayment>.sellerSectionHeading p{font-size:13px}.sellerPaymentGrid{display:grid;gap:10px;margin-top:16px}.sellerPaymentCard{display:flex;align-items:center;gap:14px;text-align:left;border:1px solid #e0e4e8;border-radius:12px;background:#fff;padding:15px;cursor:pointer}.sellerPaymentCard.selected{border:2px solid var(--akazi-orange);background:#fff8f3}.sellerPaymentCard .sellerRadio{position:static;flex:0 0 auto}.sellerPaymentText{flex:1;min-width:0}.sellerPaymentText strong,.sellerPaymentText small,.sellerPaymentText em{display:block}.sellerPaymentText small{color:#687386;margin-top:3px}.sellerPaymentText em{font-size:11px;color:#8a929d;margin-top:5px;font-style:normal}.sellerLogos{display:flex;align-items:center;gap:7px}.sellerLogos img{width:58px;height:34px;object-fit:contain;background:#fff;border-radius:5px}
 .sellerSubmit{width:100%;margin-top:24px;display:flex;align-items:center;justify-content:center;gap:7px}.sellerSubmit:disabled{opacity:.55;cursor:not-allowed}.sellerNote{display:flex;justify-content:center;align-items:center;gap:6px;color:#7b838d;font-size:12px;text-align:center}.sellerNote .material-symbols-outlined{font-size:17px}
 @media(max-width:760px){.sellerSection>.sellerSectionHeading h2{font-size:18px}.sellerPayment>.sellerSectionHeading h2{font-size:18px}.sellerPayment>.sellerSectionHeading p{font-size:12px}.sellerSection>.sellerSectionHeading p{font-size:12px}.sellerApply{padding:20px 14px 55px}.sellerHero h1{font-size:29px}.sellerHero p{font-size:14px}.sellerSteps{gap:5px;margin-bottom:28px}.sellerStep strong{display:none}.sellerStep span{width:32px;height:32px}.sellerStepLine{max-width:none}.sellerPlans{grid-template-columns:1fr;gap:12px}.sellerPlan{padding:17px 15px}.sellerPlanIcon{width:52px;height:52px;margin:4px auto 7px}.sellerPlanName{font-size:22px}.sellerPlanDescription{min-height:auto}.sellerPlanPrice{font-size:24px}.sellerFeatures{grid-template-columns:1fr 1fr}.sellerFormGrid{grid-template-columns:1fr}.sellerFormGrid label:nth-child(2){grid-column:auto}.sellerPaymentCard{align-items:flex-start}.sellerLogos{margin-left:auto}.sellerLogos img{width:46px;height:30px}.sellerSubmit{font-size:14px}.sellerHeroIcon{width:50px;height:50px}}
+
+.portalSub{margin:5px 0 0;color:#737b87;font-size:13px}
+.portalButton{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-top:0}
+.portalNavActive{background:#fff0e9;color:var(--akazi-orange)!important}
+.sellerMessage{margin:0 0 14px;padding:12px 14px;border:1px solid #ffd2bf;background:#fff7f2;color:#8a3d18;border-radius:10px;font-size:13px}
+.sellerQuickLinks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.sellerQuickLinks a{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;display:grid;gap:6px}
+.sellerQuickLinks a:hover{border-color:#ffb99b}
+.sellerQuickLinks .material-symbols-outlined{color:var(--akazi-orange);font-size:25px}
+.sellerQuickLinks small{color:#777}
+.sellerRecentOrders{display:grid}
+.sellerRecentOrder{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid #eee}
+.sellerRecentOrder>div{display:grid;gap:4px}
+.sellerRecentOrder>div:last-child{text-align:right}
+.sellerRecentOrder span{font-size:13px;color:#777}
+.sellerProductFormPanel{margin-bottom:18px}
+.sellerProductForm{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.sellerProductForm label{display:grid;gap:7px;font-size:13px;font-weight:700}
+.sellerProductForm input,.sellerProductForm select,.sellerProductForm textarea{width:100%;border:1px solid var(--akazi-border);border-radius:10px;padding:12px 13px;background:#fff;font:inherit;outline:none}
+.sellerProductForm select{height:44px}
+.sellerProductForm textarea{min-height:105px;resize:vertical}
+.sellerProductForm label.full,.sellerFormActions{grid-column:1/-1}
+.sellerProductForm small{color:#777;font-weight:500}
+.sellerFormActions{display:flex;gap:10px}
+.sellerProductTools{display:flex;gap:8px;align-items:center}
+.sellerProductTools input{width:210px}
+.compactCta,.compactButton{padding:10px 13px;margin-top:0}
+.sellerProductTableWrap{overflow:auto}
+.sellerProductCell{display:flex;align-items:center;gap:10px;min-width:220px}
+.sellerProductCell img,.sellerImagePlaceholder{width:46px;height:46px;border-radius:9px;object-fit:contain;background:#f7f7f7;flex:0 0 auto}
+.sellerImagePlaceholder{display:grid;place-items:center;color:#aaa}
+.sellerImagePlaceholder .material-symbols-outlined{font-size:22px}
+.stockLow{color:#d92d20;font-weight:800}
+.statusPill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;background:#f0f1f3;color:#555}
+.statusLive,.status-delivered{background:#eaf8ef;color:#16803b}
+.status-processing{background:#fff4df;color:#9a5a00}
+.status-shipped{background:#edf4ff;color:#2864c7}
+.status-pending{background:#fff4df;color:#9a5a00}
+.status-cancelled{background:#fff0f0;color:#b42318}
+.tableActions{display:flex;gap:8px;align-items:center}
+.tableActions button{border:0;background:none;color:var(--akazi-orange);font-weight:700;font-size:12px;padding:4px}
+.tableActions .dangerText{color:#b42318}
+.sellerOrderCards{display:grid;gap:14px}
+.sellerOrderCard{background:#fff;border:1px solid #eee;border-radius:16px;padding:18px}
+.sellerOrderTop,.sellerOrderBottom,.sellerOrderCustomer{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.sellerOrderTop{padding-bottom:13px;border-bottom:1px solid #eee}
+.sellerOrderTop div,.sellerOrderCustomer{display:grid;gap:4px}
+.sellerOrderTop small,.sellerOrderCustomer span{color:#777;font-size:12px}
+.sellerOrderCustomer{padding:13px 0}
+.sellerOrderItems{display:grid;gap:9px}
+.sellerOrderItem{display:flex;align-items:center;gap:10px;padding:8px;background:#fafafa;border-radius:10px}
+.sellerOrderItem img,.sellerOrderItem .sellerImagePlaceholder{width:48px;height:48px}
+.sellerOrderItem div{display:grid;gap:3px}
+.sellerOrderItem small{color:#777}
+.sellerOrderBottom{margin-top:14px;padding-top:13px;border-top:1px solid #eee}
+.sellerOrderBottom select{border:1px solid var(--akazi-border);border-radius:9px;padding:9px;background:#fff}
+.stockInput{width:110px}
+@media(max-width:900px){.sellerQuickLinks{grid-template-columns:1fr}.sellerProductForm{grid-template-columns:1fr}.sellerProductForm label.full,.sellerFormActions{grid-column:auto}}
+@media(max-width:600px){.sellerProductTools input{width:130px}.sellerProductTools{flex-direction:column;align-items:stretch}.sellerOrderTop,.sellerOrderBottom{align-items:flex-start}.sellerOrderBottom{flex-direction:column}.sellerRecentOrder{align-items:flex-start}.sellerRecentOrder>div:last-child{text-align:left}}
