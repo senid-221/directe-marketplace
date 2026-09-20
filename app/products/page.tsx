@@ -13,12 +13,12 @@ export default async function ProductsPage() {
       take: 60,
     });
   } catch (error) {
-    console.error("DIRECTE products load failed:", error);
+    console.error("AkaziConnect products load failed:", error);
   }
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-      <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}>← DIRECTE</Link>
+      <Link href="/" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}>← AkaziConnect</Link>
       <div className="sectionHeader"><h1>All Products</h1></div>
       <div className="products">
         {products.map((product) => (
