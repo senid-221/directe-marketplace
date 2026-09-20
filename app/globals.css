@@ -457,3 +457,12 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 
 @media(max-width:900px){.adminQuickLinks{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.adminQuickLinks{grid-template-columns:1fr}.adminCategoryAdd{flex-direction:column}.adminCategoryAdd input{max-width:none}}
+
+.paymentNote{margin:12px 0 0;color:#737b87;font-size:12px;line-height:1.5}
+.paymentResult{min-height:70vh;display:grid;place-items:center;padding:30px 16px;background:#fafafa}
+.paymentResultCard{width:min(520px,100%);background:#fff;border:1px solid #eee;border-radius:18px;padding:34px;text-align:center;box-shadow:0 10px 35px rgba(0,0,0,.05)}
+.paymentResultIcon{font-size:58px;color:var(--akazi-orange);margin-bottom:12px}
+.paymentResultCard h1{margin:0 0 9px;font-size:28px}
+.paymentResultCard p{margin:0;color:#737b87;line-height:1.6;font-size:14px}
+.paymentResultActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+.paymentResultActions a{text-decoration:none}
