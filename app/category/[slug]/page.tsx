@@ -41,7 +41,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <div className="sectionHeader"><h1>{category.name}</h1></div>
       {category.children.length > 0 && (
         <div className="subCategoryRow">
-          {category.children.map((sub) => <Link key={sub.id} href={`/category/${sub.slug}`} className="subCategoryChip">{sub.name}</Link>)}
+          {category.children.map((sub: (typeof category.children)[number]) => <Link key={sub.id} href={`/category/${sub.slug}`} className="subCategoryChip">{sub.name}</Link>)}
         </div>
       )}
       <div className="products">
