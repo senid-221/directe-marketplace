@@ -17,7 +17,7 @@ export default async function SellerPage() {
       include: { user: { select: { name: true, email: true, phone: true } }, items: { where: { sellerId: seller.id }, include: { product: { select: { name: true } } } } },
       orderBy: { createdAt: "desc" }, take: 8,
     }),
-    prisma.orderItem.findMany({ where: { sellerId: seller.id }, select: { quantity: true, unitPrice: true } }),
+    prisma.orderItem.findMany({ where: { sellerId: seller.id, order: { status: { notIn: ["CANCELLED", "REFUNDED"] } } }, select: { quantity: true, unitPrice: true } }),
   ]);
 
   const revenue = sellerItems.reduce((sum, item) => sum + Number(item.unitPrice) * item.quantity, 0);
