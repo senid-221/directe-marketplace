@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { categoryMedia } from "@/lib/product-media";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function CategoriesPage() {
       <div className="categoryPageGrid">
         {categories.map((category) => (
           <Link href={`/category/${category.slug}`} className="categoryPageCard" key={category.id}>
-            <div className="categoryPageIcon">▦</div>
+            <div className="categoryPageIcon"><img src={categoryMedia[category.slug] || categoryMedia.electronics} alt="" /></div>
             <div><strong>{category.name}</strong><div className="categoryCount">{category.count} products</div></div>
           </Link>
         ))}
