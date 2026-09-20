@@ -22,7 +22,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     : [];
 
   return <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-    <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}>← AkaziConnect</Link>
+    <Link href="/" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}>← AkaziConnect</Link>
     <form action="/search" method="get" className="search" style={{maxWidth:760,margin:"18px 0"}}>
       <span className="material-symbols-outlined">search</span>
       <input name="q" defaultValue={q} placeholder="Search products, brands, categories or sellers..." autoComplete="off" />
@@ -30,7 +30,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     </form>
     <div className="sectionHeader"><h1>{q ? `Search results for “${q}”` : "Search AkaziConnect"}</h1></div>
     <div className="products">
-      {products.map(product=><article className="card" key={product.id}>
+      {products.map((product: (typeof products)[number]) => <article className="card" key={product.id}>
         <Link href={`/product/${product.slug}`}><div className="cardImage">{product.images[0] ? <img src={product.images[0].url} alt={product.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/> : "🛍️"}</div></Link>
         <div className="cardBody"><Link href={`/product/${product.slug}`} className="title">{product.name}</Link><div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div><div className="price">RWF {Number(product.price).toLocaleString()}</div><div className="cardFooter"><Link href={`/product/${product.slug}`} className="add" style={{textAlign:"center"}}>View product</Link></div></div>
       </article>)}
