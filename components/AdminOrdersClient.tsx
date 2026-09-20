@@ -1,0 +1,9 @@
+"use client";
+import { useState } from "react";
+type Order={id:string;total:number;status:string;createdAt:string;user:{name:string|null;email:string|null;phone:string|null};items:{id:string;quantity:number;unitPrice:number;product:string;seller:string}[]};
+const statuses=["PENDING","PAID","PROCESSING","SHIPPED","DELIVERED","CANCELLED","REFUNDED"];
+export default function AdminOrdersClient({initial}:{initial:Order[]}){
+ const [orders,setOrders]=useState(initial); const [message,setMessage]=useState("");
+ async function update(id:string,status:string){const r=await fetch("/api/admin/orders",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});const d=await r.json();if(!r.ok){setMessage(d.error||"Update failed.");return}setOrders(v=>v.map(o=>o.id===id?{...o,status:d.status}:o));setMessage("Order status updated.");}
+ return <div>{message&&<div className="sellerMessage">{message}</div>}<div className="sellerOrderCards">{orders.map(o=><article className="sellerOrderCard" key={o.id}><div className="sellerOrderTop"><div><strong>#{o.id.slice(-8).toUpperCase()}</strong><small>{new Date(o.createdAt).toLocaleString("en-GB")}</small></div><span className={"statusPill status-"+o.status.toLowerCase()}>{o.status}</span></div><div className="sellerOrderCustomer"><strong>{o.user.name||"Customer"}</strong><span>{o.user.phone||o.user.email||"No contact"}</span></div><div className="sellerOrderItems">{o.items.map(i=><div className="sellerOrderItem" key={i.id}><div><strong>{i.product}</strong><small>{i.quantity} × {i.unitPrice.toLocaleString()} FRW · {i.seller}</small></div></div>)}</div><div className="sellerOrderBottom"><strong>{o.total.toLocaleString()} FRW</strong><select value={o.status} onChange={e=>update(o.id,e.target.value)}>{statuses.map(s=><option key={s}>{s}</option>)}</select></div></article>)}{!orders.length&&<div className="emptyState">No orders found.</div>}</div></div>;
+}
