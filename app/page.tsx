@@ -1,3 +1,4 @@
+import { getSiteLogo } from "@/lib/site-settings";
 import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
 import { categoryMedia, productMedia } from "@/lib/product-media";
@@ -24,12 +25,13 @@ const products = [
   ["wireless-headphones","Wireless Headphones","RWF 24,500","RWF 35,000","4.8","-30%"],
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const logoUrl = await getSiteLogo();
   return (
     <div className="shell">
       <header className="header">
         <div className="headerInner">
-          <a href="/" className="brand"><img src="/akaziconnect-logo.svg" alt="AkaziConnect" className="brandLogo" /></a>
+          <a href="/" className="brand"><img src={logoUrl} alt="AkaziConnect" className="brandLogo" /></a>
 
           <form action="/search" method="get" className="search" aria-label="Search products">
             <span className="material-symbols-outlined">search</span>
