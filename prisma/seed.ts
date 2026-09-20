@@ -16,6 +16,26 @@ const catalog: Array<[string, string, string, number, number]> = [
 ];
 
 async function main() {
+  const adminEmail = process.env.ADMIN_EMAIL?.trim();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (adminEmail && adminPassword) {
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        name: "AkaziConnect Admin",
+        password: hashPassword(adminPassword),
+        role: "ADMIN"
+      },
+      create: {
+        name: "AkaziConnect Admin",
+        email: adminEmail,
+        password: hashPassword(adminPassword),
+        role: "ADMIN"
+      }
+    });
+  }
+
   const sellerUser = await prisma.user.upsert({
     where: { email: "seller@akaziconnect.rw" },
     update: { name: "AkaziConnect Demo Seller", password: hashPassword("change-me-before-production"), role: "SELLER" },
