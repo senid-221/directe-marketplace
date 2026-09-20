@@ -10,6 +10,17 @@ export async function POST(request: Request) {
   const method = String(body.method || "CARD") as (typeof allowedMethods)[number];
   if (!allowedMethods.includes(method)) return NextResponse.json({ error: "Invalid payment method." }, { status: 400 });
 
+  const recipientName = String(body.recipientName || "").trim();
+  const phone = String(body.phone || "").trim();
+  const province = String(body.province || "").trim();
+  const district = String(body.district || "").trim();
+  const sector = String(body.sector || "").trim();
+  const address = String(body.address || "").trim();
+
+  if (!recipientName || !phone || !province || !district || !sector || !address) {
+    return NextResponse.json({ error: "Complete all Rwanda delivery details before continuing." }, { status: 400 });
+  }
+
   const secret = process.env.FLW_SECRET_KEY;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
   if (!secret || !appUrl) return NextResponse.json({ error: "Payment gateway is not configured. Add FLW_SECRET_KEY and NEXT_PUBLIC_APP_URL." }, { status: 503 });
@@ -34,6 +45,7 @@ export async function POST(request: Request) {
   const delivery = 3000;
   const total = subtotal + delivery;
   const txRef = "AKZ-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9).toUpperCase();
+  const trackingCode = "AKZ-" + Math.random().toString(36).slice(2, 8).toUpperCase() + Date.now().toString().slice(-5);
 
   const order = await prisma.order.create({
     data: {
@@ -41,6 +53,20 @@ export async function POST(request: Request) {
       total,
       status: "PENDING",
       items: { create: cart.map((item: (typeof cart)[number]) => ({ productId: item.productId, sellerId: item.product.sellerId, quantity: item.quantity, unitPrice: item.product.price })) },
+      delivery: {
+        create: {
+          trackingCode,
+          status: "PENDING",
+          recipientName,
+          phone,
+          province,
+          district,
+          sector,
+          address,
+          deliveryFee: delivery,
+          estimatedDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        },
+      },
       payment: { create: { txRef, method, amount: total, currency: "RWF", status: "PENDING", provider: "flutterwave" } },
     },
   });
@@ -55,9 +81,9 @@ export async function POST(request: Request) {
       currency: "RWF",
       redirect_url: appUrl.replace(/\/$/, "") + "/payment/callback",
       payment_options: paymentOptions,
-      customer: { email: user.email, name: user.name || "AkaziConnect Customer", phonenumber: user.phone || undefined },
+      customer: { email: user.email, name: user.name || recipientName, phonenumber: phone },
       customizations: { title: "AkaziConnect", description: "Payment for your AkaziConnect order" },
-      meta: { order_id: order.id, payment_method: method },
+      meta: { order_id: order.id, payment_method: method, tracking_code: trackingCode },
       configurations: { session_duration: 30, max_retry_attempt: 3 },
     }),
   });
@@ -66,8 +92,9 @@ export async function POST(request: Request) {
   if (!response.ok || data.status !== "success" || !data.data?.link) {
     await prisma.payment.update({ where: { orderId: order.id }, data: { status: "FAILED" } });
     await prisma.order.update({ where: { id: order.id }, data: { status: "CANCELLED" } });
+    await prisma.delivery.update({ where: { orderId: order.id }, data: { status: "CANCELLED" } });
     return NextResponse.json({ error: data.message || "Could not start payment." }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true, orderId: order.id, txRef, paymentUrl: data.data.link });
+  return NextResponse.json({ ok: true, orderId: order.id, txRef, trackingCode, paymentUrl: data.data.link });
 }
