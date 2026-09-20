@@ -90,7 +90,7 @@ export default function HomePage() {
                 </Link>
                 <div className="cardBody">
                   <Link href={"/product/"+slug} className="title">{title}</Link>
-                  <div className="rating">★ {rating} · 100+ sold</div>
+                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {rating} · 100+ sold</div>
                   <div className="price">{price}<span className="old">{old}</span></div>
                   <div className="cardFooter"><AddToCartButton productId={slug} /><Link href={"/product/"+slug} className="favorite" style={{display:"grid",placeItems:"center"}}><span className="material-symbols-outlined">favorite_border</span></Link></div>
                 </div>
@@ -109,7 +109,7 @@ export default function HomePage() {
                 </Link>
                 <div className="cardBody">
                   <Link href={"/product/"+slug} className="title">{title}</Link>
-                  <div className="rating">★ {rating} · Popular</div>
+                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {rating} · Popular</div>
                   <div className="price">{price}<span className="old">{old}</span></div>
                   <div className="cardFooter"><AddToCartButton productId={slug} /><Link href={"/product/"+slug} className="favorite" aria-label="View product"><span className="material-symbols-outlined">arrow_forward</span></Link></div>
                 </div>
