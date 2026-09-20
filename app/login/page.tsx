@@ -45,7 +45,9 @@ export default function LoginPage() {
         return;
       }
 
-      const next = new URLSearchParams(window.location.search).get("next") || "/account";
+      const next = data.user?.role === "ADMIN"
+        ? "/admin"
+        : new URLSearchParams(window.location.search).get("next") || "/account";
       router.replace(next);
       router.refresh();
     } catch {
