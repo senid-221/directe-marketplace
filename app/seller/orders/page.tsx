@@ -11,13 +11,42 @@ export default async function SellerOrdersPage() {
 
   const orders = await prisma.order.findMany({
     where: { items: { some: { sellerId: seller.id } } },
-    include: { user: { select: { name:true,email:true,phone:true } }, items: { where: { sellerId:seller.id }, include: { product:{ select:{ name:true, images:{orderBy:{position:"asc"},take:1} } } } } },
+    include: {
+      user: { select: { name:true,email:true,phone:true } },
+      delivery: true,
+      items: {
+        where: { sellerId:seller.id },
+        include: { product:{ select:{ name:true, images:{orderBy:{position:"asc"},take:1} } } }
+      }
+    },
     orderBy: { createdAt:"desc" },
   });
 
-  const safeOrders = orders.map((order: (typeof orders)[number])=>({ id:order.id,total:Number(order.total),status:order.status,createdAt:order.createdAt.toISOString(),customer:order.user,items:order.items.map((item: (typeof order.items)[number])=>({id:item.id,quantity:item.quantity,unitPrice:Number(item.unitPrice),product:{name:item.product.name,image:item.product.images[0]?.url||""}})) }));
+  const safeOrders = orders.map((order: (typeof orders)[number])=>({
+    id:order.id,
+    total:Number(order.total),
+    status:order.status,
+    createdAt:order.createdAt.toISOString(),
+    customer:order.user,
+    delivery: order.delivery ? {
+      trackingCode: order.delivery.trackingCode,
+      status: order.delivery.status,
+      recipientName: order.delivery.recipientName,
+      phone: order.delivery.phone,
+      province: order.delivery.province,
+      district: order.delivery.district,
+      sector: order.delivery.sector,
+      address: order.delivery.address,
+    } : null,
+    items:order.items.map((item: (typeof order.items)[number])=>({
+      id:item.id,
+      quantity:item.quantity,
+      unitPrice:Number(item.unitPrice),
+      product:{name:item.product.name,image:item.product.images[0]?.url||""}
+    }))
+  }));
   return <main className="portal"><SellerSidebar active="Orders" /><section className="portalMain">
-    <div className="portalTop"><div><div className="eyebrow">SELLER CENTER</div><h1>Orders</h1><p className="portalSub">Track and process orders containing your products.</p></div></div>
+    <div className="portalTop"><div><div className="eyebrow">SELLER CENTER</div><h1>Orders</h1><p className="portalSub">Track orders and manage Rwanda delivery progress.</p></div></div>
     <SellerOrdersClient initialOrders={safeOrders} />
   </section></main>;
 }
