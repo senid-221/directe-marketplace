@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function CartPage() {
   const session = await getSession();
-  if (!session) return <main style={{maxWidth:700,margin:"0 auto",padding:"50px 20px"}}><div className="emptyState"><h1>Sign in to use your cart</h1><p>Your cart is saved to your DIRECTE account.</p><Link href="/login?next=/cart" className="cta">Sign in</Link></div></main>;
+  if (!session) return <main style={{maxWidth:700,margin:"0 auto",padding:"50px 20px"}}><div className="emptyState"><h1>Sign in to use your cart</h1><p>Your cart is saved to your DIRECTE account.</p><Link href="/login?next=/cart" className="cta">Sign in</Link></div></main>
 
   const items = await prisma.cartItem.findMany({
     where: { userId: session.userId },
