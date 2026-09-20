@@ -4,6 +4,12 @@ import { productMedia } from "@/lib/product-media";
 
 export const dynamic = "force-dynamic";
 
+type CategoryChild = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let category = null;
@@ -35,13 +41,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     );
   }
 
+  const children: CategoryChild[] = category.children;
+
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
       <Link href="/categories" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> All Categories</Link>
       <div className="sectionHeader"><h1>{category.name}</h1></div>
-      {category.children.length > 0 && (
+      {children.length > 0 && (
         <div className="subCategoryRow">
-          {category.children.map((sub: (typeof category.children)[number]) => <Link key={sub.id} href={`/category/${sub.slug}`} className="subCategoryChip">{sub.name}</Link>)}
+          {children.map((sub: CategoryChild) => <Link key={sub.id} href={`/category/${sub.slug}`} className="subCategoryChip">{sub.name}</Link>)}
         </div>
       )}
       <div className="products">
