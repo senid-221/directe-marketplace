@@ -60,6 +60,7 @@ export async function PATCH(request: Request) {
     if (!order.delivery) return NextResponse.json({ error: "Delivery record not found." }, { status: 404 });
 
     const now = new Date();
+    // Build delivery update data as valid TypeScript object syntax.
     const deliveryData = {
       status: deliveryStatus,
       ...(deliveryStatus === "ASSIGNED" ? { assignedAt: now } : {}),
