@@ -19,7 +19,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px"}}>
-      <Link href={`/category/${product.category.slug}`} style={{color:"var(--directe-orange)",fontWeight:700}}>← {product.category.name}</Link>
+      <Link href={`/category/${product.category.slug}`} style={{color:"var(--directe-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> {product.category.name}</Link>
       <div className="productPage">
         <div>
           <div className="productMainImage">
@@ -35,7 +35,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <section className="productInfo">
           <div className="eyebrow">DIRECTE MARKETPLACE</div>
           <h1>{product.name}</h1>
-          <div className="productRating">★ {Number(product.rating).toFixed(1)} · {product.reviewCount} reviews</div>
+          <div className="productRating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.reviewCount} reviews</div>
           <div className="productPrice">
             RWF {Number(product.price).toLocaleString()}
             {product.oldPrice && <span>RWF {Number(product.oldPrice).toLocaleString()}</span>}
