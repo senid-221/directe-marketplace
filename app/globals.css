@@ -454,3 +454,6 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 .adminToggle.on{border-color:#b8e2c6;background:#eaf8ef;color:#16803b}
 .adminCategoryAdd{display:flex;gap:9px;margin-bottom:16px}
 .adminCategoryAdd input{flex:1;max-width:420px}
+
+@media(max-width:900px){.adminQuickLinks{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.adminQuickLinks{grid-template-columns:1fr}.adminCategoryAdd{flex-direction:column}.adminCategoryAdd input{max-width:none}}
