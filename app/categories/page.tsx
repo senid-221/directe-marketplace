@@ -14,7 +14,7 @@ export default async function CategoriesPage() {
       include: { _count: { select: { products: true } } },
       orderBy: { name: "asc" },
     });
-    categories = rows.map((category) => ({ id: category.id, name: category.name, slug: category.slug, count: category._count.products }));
+    categories = rows.map((category: (typeof rows)[number]) => ({ id: category.id, name: category.name, slug: category.slug, count: category._count.products }));
   } catch (error) {
     databaseError = true;
     console.error("AkaziConnect categories load failed:", error);
