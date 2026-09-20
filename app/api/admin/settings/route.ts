@@ -3,11 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
 const MAX_LOGO_BYTES = 4 * 1024 * 1024;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   await requireAuth(["ADMIN"]);
   const setting = await prisma.siteSetting.findUnique({ where: { id: "default" } });
-  return NextResponse.json({ logoUrl: setting?.logoUrl || "/akaziconnect-logo.svg" });
+  return NextResponse.json(
+    { logoUrl: setting?.logoUrl || "/akaziconnect-logo.svg" },
+    { headers: { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate", "Pragma": "no-cache", "Expires": "0" } }
+  );
 }
 
 export async function PUT(request: Request) {
