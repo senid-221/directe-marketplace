@@ -18,7 +18,7 @@ const paymentMethods = [
   ], banks: ["BK", "Equity", "I&M Bank"] },
   { id: "card", name: "Credit / Debit Card", detail: "Pay with Visa or Mastercard.", logos: [
     { src: "https://corporate.visa.com/dam/VCOM/corporate/about-visa/images/visa-brand-mark-grid-800x450.jpg", alt: "Visa official brand mark" },
-    { src: "https://www.mastercard.com/content/dam/public/mastercardcom/na/us/en/large-assets/brandcenter/mc_symbol_92x58.png", alt: "Mastercard official symbol" },
+    { src: "https://www.mastercard.com/news/media/jbcmoato/mastercard-symbol_transparentbg.png", alt: "Mastercard official symbol" },
   ] },
 ];
 
