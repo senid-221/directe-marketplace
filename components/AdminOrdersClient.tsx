@@ -38,7 +38,7 @@ export default function AdminOrdersClient({initial}:{initial:Order[]}){
    <div className="sellerOrderItems">{o.items.map(i=><div className="sellerOrderItem" key={i.id}><div><strong>{i.product}</strong><small>{i.quantity} × {i.unitPrice.toLocaleString()} FRW · {i.seller}</small></div></div>)}</div>
    <div className="sellerOrderBottom"><strong>{o.total.toLocaleString()} FRW</strong><div className="sellerOrderControls">
      <label>Order<select value={o.status} onChange={e=>update(o.id,e.target.value)}>{statuses.map(s=><option key={s}>{s}</option>)}</select></label>
-     {o.delivery&&<label>Delivery<select value={o.delivery.status} onChange={e=>updateDelivery(o.id,e.target.value)}>{deliveryStatuses.map(s=><option key={s}>{s.replace("_"," ")}</option>)}</select></label>}
+     {o.delivery&&<label>Delivery<select value={o.delivery.status} onChange={e=>updateDelivery(o.id,e.target.value)}>{deliveryStatuses.map(s=><option key={s} value={s}>{s.replace("_"," ")}</option>)}</select></label>}
    </div></div>
  </article>)}{!orders.length&&<div className="emptyState">No orders found.</div>}</div></div>;
 }
