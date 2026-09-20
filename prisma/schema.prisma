@@ -23,6 +23,16 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+
 enum SellerStatus {
   PENDING
   APPROVED
@@ -154,6 +164,7 @@ model Order {
   user       User       @relation(fields:[userId], references:[id])
   items      OrderItem[]
   payment    Payment?
+  delivery   Delivery?
 }
 
 model OrderItem {
@@ -180,6 +191,29 @@ model Payment {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   order         Order         @relation(fields:[orderId], references:[id], onDelete:Cascade)
+}
+
+model Delivery {
+  id             String         @id @default(cuid())
+  orderId        String         @unique
+  trackingCode   String         @unique
+  status         DeliveryStatus @default(PENDING)
+  recipientName  String
+  phone          String
+  province       String
+  district       String
+  sector         String
+  address        String
+  deliveryFee    Decimal
+  estimatedDate  DateTime?
+  assignedAt     DateTime?
+  pickedUpAt     DateTime?
+  deliveredAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  order          Order          @relation(fields:[orderId], references:[id], onDelete:Cascade)
+  @@index([status])
+  @@index([district])
 }
 
 model Wishlist {
