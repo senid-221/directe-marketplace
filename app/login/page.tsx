@@ -11,10 +11,14 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [logoUrl, setLogoUrl] = useState("/akaziconnect-logo.svg");
+  const [logoVersion, setLogoVersion] = useState(0);
 
   useEffect(() => {
-    fetch("/api/site-settings").then((res) => res.json()).then((data) => {
-      if (data.logoUrl) setLogoUrl(data.logoUrl);
+    fetch(`/api/site-settings?ts=${Date.now()}`, { cache: "no-store" }).then((res) => res.json()).then((data) => {
+      if (data.logoUrl) {
+        setLogoUrl(data.logoUrl);
+        setLogoVersion(Date.now());
+      }
     }).catch(() => {});
   }, []);
 
@@ -68,6 +72,7 @@ export default function LoginPage() {
       <div className="authCard">
         <div className="brand">
           <img
+            key={`${logoUrl}-${logoVersion}`}
             src={logoUrl}
             alt="AkaziConnect"
             className="brandLogo"
