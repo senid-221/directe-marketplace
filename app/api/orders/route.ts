@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
@@ -7,7 +8,7 @@ export async function POST() {
   if (!session) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
 
   try {
-    const order = await prisma.$transaction(async tx => {
+    const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const cart = await tx.cartItem.findMany({
         where: { userId: session.userId },
         include: { product: true }
