@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body><header style={{padding:"12px 20px",borderBottom:"1px solid #eee",background:"#fff"}}><nav style={{maxWidth:1280,margin:"0 auto"}}><a href="/categories" style={{fontWeight:700}}>All Categories</a></nav></header>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
