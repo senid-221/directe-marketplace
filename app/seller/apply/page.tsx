@@ -29,8 +29,13 @@ export default function SellerApplyPage() {
   const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);\n  const [application, setApplication] = useState<{storeName:string;status:string;plan:string|null;planAmount:number|null;paymentStatus:string|null} | null>(null);
-  const selected = plans.find((plan) => plan.id === selectedPlan);\n\n  useEffect(() => {\n    fetch("/api/seller/apply/status").then(async (r) => r.ok ? (await r.json()).seller : null).then(setApplication).catch(() => null);\n  }, []);
+  const [loading, setLoading] = useState(false);
+  const [application, setApplication] = useState<{storeName:string;status:string;plan:string|null;planAmount:number|null;paymentStatus:string|null} | null>(null);
+  const selected = plans.find((plan) => plan.id === selectedPlan);
+
+  useEffect(() => {
+    fetch("/api/seller/apply/status").then(async (r) => r.ok ? (await r.json()).seller : null).then(setApplication).catch(() => null);
+  }, []);
 
   async function continueToPayment() {
     setError("");
@@ -63,7 +68,9 @@ export default function SellerApplyPage() {
           <div><div className="eyebrow">AKAZICONNECT SELLER PROGRAM</div><h1>Become a Seller</h1><p>Apply, complete payment, then wait for AkaziConnect approval.</p></div>
         </div>
       </div>
-      {application && <section className="sellerFormCard"><div className="sellerFormTitle"><span className="material-symbols-outlined">pending_actions</span><div><h2>Application status</h2><p><strong>{application.storeName}</strong> · {application.plan || "Seller"} · {application.planAmount ? application.planAmount.toLocaleString() + " RWF" : ""}</p><p>Payment: <strong>{application.paymentStatus || "N/A"}</strong> · Review: <strong>{application.status}</strong></p></div></div></section>}\n\n      <div className="sellerSteps">
+      {application && <section className="sellerFormCard"><div className="sellerFormTitle"><span className="material-symbols-outlined">pending_actions</span><div><h2>Application status</h2><p><strong>{application.storeName}</strong> · {application.plan || "Seller"} · {application.planAmount ? application.planAmount.toLocaleString() + " RWF" : ""}</p><p>Payment: <strong>{application.paymentStatus || "N/A"}</strong> · Review: <strong>{application.status}</strong></p></div></div></section>}
+
+      <div className="sellerSteps">
         <div className="sellerStep active"><span>1</span><strong>Application</strong></div><div className="sellerStepLine" />
         <div className="sellerStep active"><span>2</span><strong>Payment</strong></div><div className="sellerStepLine" />
         <div className="sellerStep"><span>3</span><strong>Admin Review</strong></div><div className="sellerStepLine" />
