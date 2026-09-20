@@ -31,7 +31,7 @@ export default function HomePage() {
 
       <header className="header">
         <div className="headerInner">
-          <a href="/" className="brand"><img src="/directe-logo.svg" alt="DIRECTE" className="brandLogo" /></a>
+          <a href="/" className="brand"><img src="/directe-logo.svg" alt="AkaziConnect" className="brandLogo" /></a>
 
           <label className="search" aria-label="Search products">
             <span className="material-symbols-outlined">search</span>
@@ -56,14 +56,14 @@ export default function HomePage() {
       <main className="container">
         <section className="hero">
           <div className="heroMain">
-            <div style={{display:"inline-block",padding:"6px 9px",borderRadius:999,background:"#111",color:"#fff",fontSize:11,fontWeight:800}}>WELCOME TO DIRECTE</div>
+            <div style={{display:"inline-block",padding:"6px 9px",borderRadius:999,background:"#111",color:"#fff",fontSize:11,fontWeight:800}}>WELCOME TO AKAZICONNECT</div>
             <h1>Everything you need, delivered across Rwanda.</h1>
-            <p>Discover products from trusted sellers, compare prices, find deals, and shop from one DIRECTE marketplace.</p>
+            <p>Discover products from trusted sellers, compare prices, find deals, and shop from one AkaziConnect marketplace.</p>
             <Link href="/products" className="cta">Shop now</Link>
           </div>
           <div className="heroSide">
             <div className="promo"><div style={{fontSize:13,fontWeight:800}}><span className="material-symbols-outlined inlineIcon">local_fire_department</span> FLASH DEALS</div><div style={{fontSize:27,fontWeight:800,marginTop:8}}>Up to 50% off</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Limited-time marketplace offers</div></div>
-            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--directe-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on DIRECTE</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
+            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--directe-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on AkaziConnect</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
           </div>
         </section>
 
@@ -121,7 +121,7 @@ export default function HomePage() {
 
       <footer className="footer">
         <div className="footerInner">
-          <div><h3>DIRECTE</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
+          <div><h3>AkaziConnect</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
           <div><h3>Shop</h3><a href="/categories">Categories</a><a href="/deals">Flash Deals</a><a href="/best-sellers">Best Sellers</a></div>
           <div><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><a href="#">Seller Center</a><a href="#">Seller Support</a></div>
           <div><h3>Help</h3><a href="#">Orders</a><a href="#">Delivery</a><a href="#">Contact Support</a></div>
