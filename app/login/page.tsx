@@ -57,7 +57,14 @@ export default function LoginPage() {
   return (
     <main className="authPage">
       <div className="authCard">
-        <div className="brand"><img src="/directe-logo.svg" alt="AkaziConnect" className="brandLogo" />AkaziConnect</div>
+        <div className="brand">
+          <img
+            src="/akaziconnect-logo.svg"
+            alt="AkaziConnect"
+            className="brandLogo"
+          />
+        </div>
+
         <h1>Welcome back</h1>
         <p>Sign in to manage your shopping, orders and account.</p>
 
@@ -102,7 +109,12 @@ export default function LoginPage() {
             Continue with phone
           </button>
         ) : (
-          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}>
+          <button
+            className="secondaryButton"
+            style={{ width: "100%" }}
+            type="button"
+            onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}
+          >
             Use email instead
           </button>
         )}
