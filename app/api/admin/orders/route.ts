@@ -6,7 +6,7 @@ const statuses=["PENDING","PAID","PROCESSING","SHIPPED","DELIVERED","CANCELLED",
 export async function GET(){
   await requireAuth(["ADMIN"]);
   const orders=await prisma.order.findMany({include:{user:{select:{name:true,email:true,phone:true}},items:{include:{product:{select:{name:true,seller:{select:{storeName:true}}}}}}},orderBy:{createdAt:"desc"},take:200});
-  return NextResponse.json({orders:orders.map(o=>({id:o.id,total:Number(o.total),status:o.status,createdAt:o.createdAt,user:o.user,items:o.items.map(i=>({id:i.id,quantity:i.quantity,unitPrice:Number(i.unitPrice),product:i.product.name,seller:i.product.seller.storeName}))}))});
+  return NextResponse.json({orders:orders.map((o: (typeof orders)[number])=>({id:o.id,total:Number(o.total),status:o.status,createdAt:o.createdAt,user:o.user,items:o.items.map((i: (typeof o.items)[number])=>({id:i.id,quantity:i.quantity,unitPrice:Number(i.unitPrice),product:i.product.name,seller:i.product.seller.storeName}))}))});
 }
 export async function PATCH(request:Request){
   await requireAuth(["ADMIN"]);
