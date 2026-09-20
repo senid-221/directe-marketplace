@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "@/next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
@@ -8,7 +8,7 @@ export async function GET(){
     include:{user:{select:{name:true,email:true,phone:true}},_count:{select:{products:true}}},
     orderBy:{createdAt:"desc"}
   });
-  return NextResponse.json({sellers:sellers.map(s=>({
+  return NextResponse.json({sellers:sellers.map((s: (typeof sellers)[number])=>({
     id:s.id,storeName:s.storeName,description:s.description||"",status:s.status,createdAt:s.createdAt,
     plan:s.plan,planAmount:s.planAmount?Number(s.planAmount):null,paymentStatus:s.paymentStatus,paymentMethod:s.paymentMethod,
     user:s.user,productCount:s._count.products
