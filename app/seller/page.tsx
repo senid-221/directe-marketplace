@@ -2,6 +2,10 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
+type SellerProductStock = {
+  stock: number;
+};
+
 export default async function SellerPage() {
   const session = await requireAuth(["SELLER"]).catch(() => null);
   if (!session) redirect("/login?next=/seller");
@@ -21,7 +25,8 @@ export default async function SellerPage() {
   ]);
 
   const revenue = sellerItems.reduce((sum: number, item: (typeof sellerItems)[number]) => sum + Number(item.unitPrice) * item.quantity, 0);
-  const lowStock = products.filter((product: (typeof products)[number]) => product.stock <= 5).length;
+  const sellerProducts: SellerProductStock[] = products;
+  const lowStock = sellerProducts.filter((product: SellerProductStock) => product.stock <= 5).length;
 
   return <main className="portal"><SellerSidebar active="Dashboard" /><section className="portalMain">
     <div className="portalTop">
