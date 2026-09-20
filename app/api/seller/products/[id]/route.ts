@@ -28,7 +28,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const oldPrice = body.oldPrice === "" || body.oldPrice == null ? null : Number(body.oldPrice);
     const stock = Number(body.stock ?? current.stock);
     const published = body.published === undefined ? current.published : Boolean(body.published);
-    const rawImages = Array.isArray(body.images) ? body.images : String(body.images ?? current.images.map((image) => image.url).join("\n")).split(/[,\n]/);
+    const rawImages = Array.isArray(body.images) ? body.images : String(body.images ?? current.images.map((image: (typeof current.images)[number]) => image.url).join("\n")).split(/[,\n]/);
     const images = rawImages.map((url: unknown) => String(url).trim()).filter((url: string) => /^https?:\/\//i.test(url)).slice(0, 8);
 
     if (!name || !categoryId || !Number.isFinite(price) || price <= 0 || !Number.isInteger(stock) || stock < 0) {
