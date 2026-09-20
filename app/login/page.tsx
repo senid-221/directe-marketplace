@@ -57,7 +57,7 @@ export default function LoginPage() {
   return (
     <main className="authPage">
       <div className="authCard">
-        <div className="brand"><span className="brandMark">D</span>DIRECTE</div>
+        <div className="brand"><span className="brandMark">A</span>AkaziConnect</div>
         <h1>Welcome back</h1>
         <p>Sign in to manage your shopping, orders and account.</p>
 
@@ -97,27 +97,17 @@ export default function LoginPage() {
         <div className="authDivider">or</div>
 
         {!phoneMode ? (
-          <button
-            className="secondaryButton"
-            style={{ width: "100%" }}
-            type="button"
-            onClick={enablePhoneLogin}
-          >
+          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={enablePhoneLogin}>
             <span className="material-symbols-outlined inlineIcon">phone</span>
             Continue with phone
           </button>
         ) : (
-          <button
-            className="secondaryButton"
-            style={{ width: "100%" }}
-            type="button"
-            onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}
-          >
+          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}>
             Use email instead
           </button>
         )}
 
-        <small>By continuing, you agree to DIRECTE terms and privacy policy.</small>
+        <small>By continuing, you agree to AkaziConnect terms and privacy policy.</small>
       </div>
     </main>
   );
