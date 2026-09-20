@@ -22,7 +22,7 @@ export default async function CategoriesPage() {
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-      <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}>← Back to DIRECTE</Link>
+      <Link href="/" style={{color:"var(--directe-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> Back to DIRECTE</Link>
       <div className="sectionHeader"><h1>All Categories</h1></div>
       {databaseError && (
         <div className="databaseNotice">DIRECTE database is not connected. Set DATABASE_URL on Hostinger and run the Prisma migration and seed.</div>
