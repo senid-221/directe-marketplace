@@ -17,11 +17,11 @@ const catalog: Array<[string, string, string, number, number]> = [
 
 async function main() {
   const sellerUser = await prisma.user.upsert({
-    where: { email: "seller@directe.rw" },
+    where: { email: "seller@akaziconnect.rw" },
     update: { password: hashPassword("change-me-before-production"), role: "SELLER" },
     create: {
-      name: "DIRECTE Demo Seller",
-      email: "seller@directe.rw",
+      name: "AkaziConnect Demo Seller",
+      email: "seller@akaziconnect.rw",
       role: "SELLER",
       password: hashPassword("change-me-before-production")
     }
@@ -30,7 +30,7 @@ async function main() {
   const seller = await prisma.seller.upsert({
     where: { userId: sellerUser.id },
     update: { status: "APPROVED" },
-    create: { userId: sellerUser.id, storeName: "DIRECTE Demo Store", status: "APPROVED" }
+    create: { userId: sellerUser.id, storeName: "AkaziConnect Demo Store", status: "APPROVED" }
   });
 
   for (const [name, slug, productName, price, oldPrice] of catalog) {
@@ -57,7 +57,7 @@ async function main() {
         categoryId: category.id,
         name: productName,
         slug: productSlug,
-        description: `DIRECTE demo product in ${name}`,
+        description: `AkaziConnect demo product in ${name}`,
         price,
         oldPrice,
         stock: 50,
