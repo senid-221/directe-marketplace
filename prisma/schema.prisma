@@ -78,8 +78,14 @@ model Seller {
   storeName   String
   description String?
   status      SellerStatus @default(PENDING)
-  commission  Decimal      @default(0)
-  createdAt   DateTime     @default(now())
+  commission     Decimal      @default(0)
+  plan           String?
+  planAmount     Decimal?
+  paymentStatus  PaymentStatus?
+  paymentMethod  PaymentMethod?
+  paymentTxRef   String?       @unique
+  paymentTxnId   String?
+  createdAt      DateTime      @default(now())
   user        User         @relation(fields:[userId], references:[id], onDelete:Cascade)
   products    Product[]
 }
