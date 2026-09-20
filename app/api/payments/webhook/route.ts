@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { verifyAndFinalizePayment } from "@/lib/payment";\nimport { verifyAndFinalizeSellerPayment } from "@/lib/seller-payment";
+import { verifyAndFinalizePayment } from "@/lib/payment";
+import { verifyAndFinalizeSellerPayment } from "@/lib/seller-payment";
 
 export async function POST(request: Request) {
   const raw = await request.text();
