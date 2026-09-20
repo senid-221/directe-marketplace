@@ -16,7 +16,7 @@ export default async function SellerProductsPage() {
 
   return <main className="portal"><SellerSidebar active="Products" /><section className="portalMain">
     <div className="portalTop"><div><div className="eyebrow">SELLER CENTER</div><h1>Products</h1><p className="portalSub">Manage your catalog, prices and stock.</p></div><a className="cta portalButton" href="#add-product">+ Add product</a></div>
-    <SellerProductsClient initialProducts={products.map((p) => ({ id:p.id,name:p.name,description:p.description||"",categoryId:p.categoryId,categoryName:p.category.name,price:Number(p.price),oldPrice:p.oldPrice===null?null:Number(p.oldPrice),stock:p.stock,published:p.published,images:p.images.map(i=>i.url),updatedAt:p.updatedAt.toISOString() }))} categories={categories.map((c)=>({id:c.id,name:c.name}))} />
+    <SellerProductsClient initialProducts={products.map((product: (typeof products)[number]) => ({ id:product.id,name:product.name,description:product.description||"",categoryId:product.categoryId,categoryName:product.category.name,price:Number(product.price),oldPrice:product.oldPrice===null?null:Number(product.oldPrice),stock:product.stock,published:product.published,images:product.images.map((image: (typeof product.images)[number]) => image.url),updatedAt:product.updatedAt.toISOString() }))} categories={categories.map((category: (typeof categories)[number]) => ({id:category.id,name:category.name}))} />
   </section></main>;
 }
 
