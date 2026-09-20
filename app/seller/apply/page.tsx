@@ -21,8 +21,13 @@ const paymentMethods = [
   {
     id: "bank",
     name: "Banking",
-    detail: "Pay by bank transfer or supported banking option.",
-    logos: [],
+    detail: "Choose your bank for bank transfer.",
+    logos: [
+      { src: "https://www.google.com/s2/favicons?domain=bk.rw&sz=128", alt: "Bank of Kigali official site logo" },
+      { src: "https://www.google.com/s2/favicons?domain=equitygroupholdings.com&sz=128", alt: "Equity official site logo" },
+      { src: "https://www.google.com/s2/favicons?domain=imbankgroup.com&sz=128", alt: "I&M Bank official site logo" },
+    ],
+    banks: ["BK", "Equity", "I&M Bank"],
   },
   {
     id: "card",
@@ -113,6 +118,15 @@ export default function SellerApplyPage() {
                     <span style={{ flex: 1 }}>
                       <strong>{method.name}</strong>
                       <small style={{ display: "block", marginTop: 3, color: "#666" }}>{method.detail}</small>
+                      {"banks" in method && method.banks && (
+                        <span style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+                          {method.banks.map((bank) => (
+                            <span key={bank} style={{ fontSize: 12, fontWeight: 700, padding: "4px 8px", border: "1px solid var(--directe-border)", borderRadius: 6, background: "#fff" }}>
+                              {bank}
+                            </span>
+                          ))}
+                        </span>
+                      )}
                     </span>
                     {method.logos.length > 0 && (
                       <span style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
