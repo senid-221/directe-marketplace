@@ -53,7 +53,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </div>
       )}
       <div className="products">
-        {category.products.map((product) => (
+        {category.products.map((product: (typeof category.products)[number]) => (
           <article className="card" key={product.id}>
             <Link href={`/product/${product.slug}`}>
               <div className="cardImage">{product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} /> : <img src={productMedia[product.slug] || productMedia["wireless-headphones"]} alt={product.name} style={{width:"100%",height:"100%",objectFit:"contain"}} />}</div>
