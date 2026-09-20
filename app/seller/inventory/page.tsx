@@ -12,7 +12,7 @@ export default async function SellerInventoryPage() {
   const products = await prisma.product.findMany({ where:{sellerId:seller.id},include:{images:{orderBy:{position:"asc"}}},orderBy:{stock:"asc"} });
   return <main className="portal"><SellerSidebar active="Inventory" /><section className="portalMain">
     <div className="portalTop"><div><div className="eyebrow">SELLER CENTER</div><h1>Inventory</h1><p className="portalSub">Keep stock levels up to date.</p></div><a href="/seller/products#add-product" className="cta portalButton">+ Add product</a></div>
-    <InventoryClient initialProducts={products.map((p)=>({id:p.id,name:p.name,stock:p.stock,price:Number(p.price),image:p.images[0]?.url||""}))} />
+    <InventoryClient initialProducts={products.map((product: (typeof products)[number])=>({id:product.id,name:product.name,stock:product.stock,price:Number(product.price),image:product.images[0]?.url||""}))} />
   </section></main>;
 }
 
