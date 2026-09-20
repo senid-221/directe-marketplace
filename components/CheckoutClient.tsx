@@ -21,7 +21,7 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
   const [payment, setPayment] = useState("momo");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
+  const [province, setProvince] = useState("Kigali City");
   const [district, setDistrict] = useState("");
   const [sector, setSector] = useState("");
   const [address, setAddress] = useState("");
@@ -40,7 +40,15 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
       const response = await fetch("/api/payments/create", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({method}),
+        body: JSON.stringify({
+          method,
+          recipientName: fullName.trim(),
+          phone: phone.trim(),
+          province: province.trim(),
+          district: district.trim(),
+          sector: sector.trim(),
+          address: address.trim(),
+        }),
       });
 
       const data = await response.json();
@@ -72,13 +80,14 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
     <div className="checkoutLayout">
       <section className="checkoutCard">
         <h2>Delivery details</h2>
+        <p className="paymentNote">Enter the Rwanda location where your order should be delivered. Your tracking code will be available after checkout.</p>
         <div className="formGrid">
-          <label>Full name<input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" /></label>
-          <label>Phone number<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+250 7xx xxx xxx" /></label>
-          <label>Province<input value={province} onChange={(e) => setProvince(e.target.value)} placeholder="Kigali City" /></label>
+          <label>Full name<input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" autoComplete="name" /></label>
+          <label>Phone number<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+250 7xx xxx xxx" inputMode="tel" autoComplete="tel" /></label>
+          <label>Province / City<input value={province} onChange={(e) => setProvince(e.target.value)} placeholder="Kigali City" /></label>
           <label>District<input value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="Gasabo" /></label>
           <label>Sector<input value={sector} onChange={(e) => setSector(e.target.value)} placeholder="Kacyiru" /></label>
-          <label>Address<input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street / village / landmark" /></label>
+          <label>Address / landmark<input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, village, house number or landmark" /></label>
         </div>
 
         <h2>Payment method</h2>
@@ -86,7 +95,7 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
         <label className="paymentOption"><input type="radio" name="p" value="bank" checked={payment === "bank"} onChange={() => setPayment("bank")} /> Banking</label>
         <label className="paymentOption"><input type="radio" name="p" value="card" checked={payment === "card"} onChange={() => setPayment("card")} /> Credit / Debit Card</label>
 
-        <p className="paymentNote">You will be redirected to the secure payment page to complete your payment.</p>
+        <p className="paymentNote">Delivery fee is currently RWF {delivery.toLocaleString()}. Payment is completed through the secure payment page.</p>
         <button className="cta" onClick={pay} disabled={busy} style={{marginTop:18,width:"100%"}}>
           {busy ? "Opening secure payment..." : "Pay securely · RWF " + total.toLocaleString()}
         </button>
