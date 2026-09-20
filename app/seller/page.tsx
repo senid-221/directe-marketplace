@@ -21,7 +21,7 @@ export default async function SellerPage() {
   ]);
 
   const revenue = sellerItems.reduce((sum: number, item: (typeof sellerItems)[number]) => sum + Number(item.unitPrice) * item.quantity, 0);
-  const lowStock = products.filter((product) => product.stock <= 5).length;
+  const lowStock = products.filter((product: (typeof products)[number]) => product.stock <= 5).length;
 
   return <main className="portal"><SellerSidebar active="Dashboard" /><section className="portalMain">
     <div className="portalTop">
@@ -43,7 +43,7 @@ export default async function SellerPage() {
 
     <div className="panel">
       <div className="sectionHeader"><div><h2>Recent orders</h2><p className="portalSub">Orders containing your products.</p></div><a href="/seller/orders">View all</a></div>
-      <div className="sellerRecentOrders">{recentOrders.map((order) => <div className="sellerRecentOrder" key={order.id}>
+      <div className="sellerRecentOrders">{recentOrders.map((order: (typeof recentOrders)[number]) => <div className="sellerRecentOrder" key={order.id}>
         <div><strong>#{order.id.slice(-8).toUpperCase()}</strong><span>{order.user.name || order.user.phone || order.user.email || "Customer"}</span></div>
         <div><span>{order.items.length} item{order.items.length===1?"":"s"}</span><strong>{order.status}</strong></div>
       </div>)}{!recentOrders.length && <div className="emptyState">No orders yet.</div>}</div>
