@@ -27,21 +27,20 @@ const products = [
 export default function HomePage() {
   return (
     <div className="shell">
-      <div className="topbar">Fast delivery across Rwanda · Prices shown in RWF</div>
-
       <header className="header">
         <div className="headerInner">
           <a href="/" className="brand"><img src="/directe-logo.svg" alt="AkaziConnect" className="brandLogo" /></a>
 
-          <label className="search" aria-label="Search products">
+          <form action="/search" method="get" className="search" aria-label="Search products">
             <span className="material-symbols-outlined">search</span>
-            <form action="/search" className="searchForm"><input name="q" placeholder="Search products, brands and more..." /></form>
-          </label>
+            <input name="q" placeholder="Search products, brands and more..." autoComplete="off" />
+            <button type="submit" className="searchButton" aria-label="Search"><span className="material-symbols-outlined">search</span></button>
+          </form>
 
           <div className="headerActions">
             <button className="iconButton" aria-label="Wishlist"><span className="material-symbols-outlined">favorite_border</span></button>
             <button className="iconButton" aria-label="Cart"><span className="material-symbols-outlined">shopping_cart</span></button>
-            <button className="iconButton">Account</button>
+            <a href="/account" className="iconButton">Account</a>
           </div>
         </div>
         <nav className="nav">
