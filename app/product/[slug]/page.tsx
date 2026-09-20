@@ -3,6 +3,8 @@ import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { productMedia } from "@/lib/product-media";
+import WishlistButton from "@/components/WishlistButton";
+import ReviewsSection from "@/components/ReviewsSection";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +35,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <section className="productInfo">
-          <div className="eyebrow">AkaziConnect MARKETPLACE</div>
           <h1>{product.name}</h1>
           <div className="productRating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.reviewCount} reviews</div>
           <div className="productPrice">
@@ -59,6 +60,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <h2>Product details</h2>
         <p>{product.description || "Product details will be provided by the seller."}</p>
       </section>
+      <ReviewsSection productId={product.id} />
     </main>
   );
 }
