@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -10,6 +10,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("/akaziconnect-logo.svg");
+
+  useEffect(() => {
+    fetch("/api/site-settings").then((res) => res.json()).then((data) => {
+      if (data.logoUrl) setLogoUrl(data.logoUrl);
+    }).catch(() => {});
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,7 +66,7 @@ export default function LoginPage() {
       <div className="authCard">
         <div className="brand">
           <img
-            src="/akaziconnect-logo.svg"
+            src={logoUrl}
             alt="AkaziConnect"
             className="brandLogo"
           />
