@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
   }
 
   const text = typeof comment === "string" ? comment.trim().slice(0, 1000) : "";
-  const review = await prisma.$transaction(async tx => {
+  const review = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const saved = await tx.review.upsert({
       where: { userId_productId: { userId: s.userId, productId } },
       create: { userId: s.userId, productId, rating: score, comment: text || null },
