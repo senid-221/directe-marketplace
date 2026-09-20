@@ -18,4 +18,5 @@ export default async function CartPage() {
     <Link href="/products" style={{color:"var(--directe-orange)",fontWeight:700}}>← Continue shopping</Link>
     <div className="sectionHeader"><h1>Shopping Cart</h1></div>
     <CartClient initialItems={items.map(i=>({id:i.id,quantity:i.quantity,product:{id:i.product.id,name:i.product.name,slug:i.product.slug,price:Number(i.product.price),stock:i.product.stock,seller:i.product.seller.storeName,image:i.product.images[0]?.url || null}}))}/>
-  </main>;
+  </main>
+}
