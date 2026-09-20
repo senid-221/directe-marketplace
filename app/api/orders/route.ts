@@ -19,7 +19,7 @@ export async function POST() {
         if (!item.product.published || item.product.stock < item.quantity) throw new Error("STOCK_CHANGED");
       }
 
-      const total = cart.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0) + 3000;
+      const total = cart.reduce((sum: number, item: (typeof cart)[number]) => sum + Number(item.product.price) * item.quantity, 0) + 3000;
       const created = await tx.order.create({
         data: {
           userId: session.userId,
