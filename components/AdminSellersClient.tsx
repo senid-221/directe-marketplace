@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-type Seller={id:string;storeName:string;status:string;createdAt:string;description:string;productCount:number;plan:string|null;planAmount:number|null;paymentStatus:string|null;paymentMethod:string|null;user:{name:string|null;email:string|null;phone:string|null}};
+type Seller={id:string;storeName:string;status:string;createdAt:string;description:string;productCount:number;plan:string|null;planAmount:number|null;paymentStatus:string|null;paymentMethod:string|null;paymentTxRef:string|null;user:{name:string|null;email:string|null;phone:string|null}};
 const statuses=["PENDING","APPROVED","SUSPENDED","REJECTED"];
 export default function AdminSellersClient({initial}:{initial:Seller[]}){
  const [sellers,setSellers]=useState(initial); const [message,setMessage]=useState("");
- async function update(id:string,status:string){
+ async function update(id:string,status:string){ 
   const r=await fetch("/api/admin/sellers",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});
   const d=await r.json(); if(!r.ok){setMessage(d.error||"Update failed.");return}
   setSellers(v=>v.map(s=>s.id===id?{...s,status}:s));setMessage("Seller status updated.");
