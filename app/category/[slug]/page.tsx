@@ -22,7 +22,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       },
     });
   } catch (error) {
-    console.error("DIRECTE category load failed:", error);
+    console.error("AkaziConnect category load failed:", error);
   }
 
   if (!category) {
@@ -37,7 +37,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-      <Link href="/categories" style={{color:"var(--directe-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> All Categories</Link>
+      <Link href="/categories" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> All Categories</Link>
       <div className="sectionHeader"><h1>{category.name}</h1></div>
       {category.children.length > 0 && (
         <div className="subCategoryRow">
