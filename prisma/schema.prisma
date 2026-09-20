@@ -54,6 +54,12 @@ enum PaymentStatus {
   REFUNDED
 }
 
+model SiteSetting {
+  id        String   @id @default("default")
+  logoUrl   String?
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
