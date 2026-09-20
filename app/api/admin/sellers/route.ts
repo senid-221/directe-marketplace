@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
@@ -23,7 +24,7 @@ export async function PATCH(request:Request){
   if(status==="APPROVED" && seller.paymentTxRef && seller.paymentStatus!=="SUCCESSFUL") {
     return NextResponse.json({error:"Seller must complete the application payment before approval."},{status:409});
   }
-  const updated=await prisma.$transaction(async tx=>{
+  const updated=await prisma.$transaction(async (tx: Prisma.TransactionClient)=>{
     const next=await tx.seller.update({where:{id},data:{status:status as "PENDING"|"APPROVED"|"SUSPENDED"|"REJECTED"}});
     if(status==="APPROVED") await tx.user.update({where:{id:seller.userId},data:{role:"SELLER"}});
     if(status==="REJECTED") await tx.user.update({where:{id:seller.userId},data:{role:"CUSTOMER"}});
