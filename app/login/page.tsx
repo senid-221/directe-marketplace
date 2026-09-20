@@ -57,7 +57,7 @@ export default function LoginPage() {
   return (
     <main className="authPage">
       <div className="authCard">
-        <div className="brand"><span className="brandMark">A</span>AkaziConnect</div>
+        <div className="brand"><img src="/directe-logo.svg" alt="AkaziConnect" className="brandLogo" />AkaziConnect</div>
         <h1>Welcome back</h1>
         <p>Sign in to manage your shopping, orders and account.</p>
 
