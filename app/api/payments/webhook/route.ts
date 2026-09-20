@@ -19,7 +19,8 @@ export async function POST(request: Request) {
     const payload = JSON.parse(raw);
     const tx = payload?.data;
     if (payload?.event === "charge.completed" && tx?.tx_ref && tx?.id) {
-      if (String(tx.tx_ref).startsWith("AKZ-SELLER-")) await verifyAndFinalizeSellerPayment(String(tx.tx_ref), String(tx.id));\n      else await verifyAndFinalizePayment(String(tx.tx_ref), String(tx.id));
+      if (String(tx.tx_ref).startsWith("AKZ-SELLER-")) await verifyAndFinalizeSellerPayment(String(tx.tx_ref), String(tx.id));
+      else await verifyAndFinalizePayment(String(tx.tx_ref), String(tx.id));
     }
     return NextResponse.json({ received: true });
   } catch (error) {
