@@ -29,7 +29,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
           {product.images.length > 1 && (
             <div className="productThumbs">
-              {product.images.map((image)=> <div className="productThumb" key={image.id}><img src={image.url} alt={image.alt || product.name} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:12}} /></div>)}
+              {product.images.map((image: (typeof product.images)[number]) => <div className="productThumb" key={image.id}><img src={image.url} alt={image.alt || product.name} style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:12}} /></div>)}
             </div>
           )}
         </div>
