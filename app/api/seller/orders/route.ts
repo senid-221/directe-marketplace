@@ -23,10 +23,10 @@ export async function GET() {
   });
 
   return NextResponse.json({
-    orders: orders.map((order) => ({
+    orders: orders.map((order: (typeof orders)[number]) => ({
       id: order.id, total: Number(order.total), status: order.status, createdAt: order.createdAt,
       customer: order.user,
-      items: order.items.map((item) => ({
+      items: order.items.map((item: (typeof order.items)[number]) => ({
         ...item, unitPrice: Number(item.unitPrice),
         product: { ...item.product, price: Number(item.product.price) },
       })),
