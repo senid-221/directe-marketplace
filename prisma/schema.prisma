@@ -30,6 +30,20 @@ enum SellerStatus {
   REJECTED
 }
 
+enum PaymentMethod {
+  CARD
+  MOBILE_MONEY
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -142,6 +156,21 @@ model OrderItem {
   unitPrice Decimal
   order     Order   @relation(fields:[orderId], references:[id], onDelete:Cascade)
   product   Product @relation(fields:[productId], references:[id])
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String        @unique
+  txRef         String        @unique
+  transactionId String?
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  amount        Decimal
+  currency      String        @default("RWF")
+  provider      String        @default("flutterwave")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  order         Order         @relation(fields:[orderId], references:[id], onDelete:Cascade)
 }
 
 model Review {
