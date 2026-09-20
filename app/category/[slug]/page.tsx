@@ -37,7 +37,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
-      <Link href="/categories" style={{color:"var(--directe-orange)",fontWeight:700}}>← All Categories</Link>
+      <Link href="/categories" style={{color:"var(--directe-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> All Categories</Link>
       <div className="sectionHeader"><h1>{category.name}</h1></div>
       {category.children.length > 0 && (
         <div className="subCategoryRow">
@@ -52,7 +52,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </Link>
             <div className="cardBody">
               <div className="title">{product.name}</div>
-              <div className="rating">★ {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div>
+              <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div>
               <div className="price">RWF {Number(product.price).toLocaleString()}</div>
               <div className="cardFooter"><Link href={`/product/${product.slug}`} className="add" style={{textAlign:"center"}}>View product</Link></div>
             </div>
