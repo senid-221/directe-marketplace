@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [logoVersion, setLogoVersion] = useState(0);
 
   useEffect(() => {
-    fetch(`/api/site-settings?ts=${Date.now()}`, { cache: "no-store" }).then((res) => res.json()).then((data) => {
+    fetch(`/api/site-settings?ts=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } }).then((res) => res.json()).then((data) => {
       if (data.logoUrl) {
         setLogoUrl(data.logoUrl);
         setLogoVersion(Date.now());
