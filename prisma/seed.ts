@@ -41,6 +41,7 @@ async function main() {
     });
 
     const productSlug = productName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const description = `AkaziConnect demo product in ${name}`;
 
     const product = await prisma.product.upsert({
       where: { slug: productSlug },
@@ -49,6 +50,7 @@ async function main() {
         published: true,
         price,
         oldPrice,
+        description,
         categoryId: category.id,
         sellerId: seller.id
       },
@@ -57,7 +59,7 @@ async function main() {
         categoryId: category.id,
         name: productName,
         slug: productSlug,
-        description: `AkaziConnect demo product in ${name}`,
+        description,
         price,
         oldPrice,
         stock: 50,
