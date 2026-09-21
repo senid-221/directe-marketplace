@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
-  const product = await prisma.product.findUnique({ where: { id }, include: { images: true, seller: true, category: true, reviews: true } });
+  const product = await prisma.product.findFirst({ where: { id, published: true, seller: { status: "APPROVED" } }, include: { images: true, seller: true, category: true, reviews: true } });
   if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
   return NextResponse.json(product);
 }
@@ -15,7 +15,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     const { id } = await context.params;
     const product = await prisma.product.findUnique({ where: { id }, include: { seller: true } });
     if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    if (session.role === "SELLER" && product.seller.userId !== session.userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (session.role === "SELLER" && (product.seller.userId !== session.userId || product.seller.status !== "APPROVED")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     const body = await request.json();
     const updated = await prisma.product.update({
       where: { id },
