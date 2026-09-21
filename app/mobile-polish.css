@@ -1,0 +1,229 @@
+/* Final responsive polish for account, seller and admin portals */
+
+@media (max-width: 760px) {
+  .portal {
+    display: block !important;
+    min-height: 100vh;
+  }
+
+  .portalSide {
+    width: 100% !important;
+    position: static !important;
+    padding: 12px !important;
+    display: flex !important;
+    align-items: center;
+    gap: 7px;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-right: 0 !important;
+    border-bottom: 1px solid #eee;
+  }
+
+  .portalSide .brand {
+    flex: 0 0 auto;
+    font-size: 18px;
+    margin-right: 5px;
+  }
+
+  .portalSide h3 {
+    display: none;
+  }
+
+  .portalSide a {
+    flex: 0 0 auto;
+    padding: 9px 11px !important;
+    border-radius: 9px;
+    font-size: 12px;
+  }
+
+  .portalMain {
+    min-width: 0;
+    padding: 18px 12px 40px !important;
+  }
+
+  .portalTop {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: start !important;
+  }
+
+  .portalTop h1 {
+    font-size: 27px !important;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+
+  .portalButton {
+    width: 100%;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    margin: 16px 0 !important;
+  }
+
+  .stat {
+    min-width: 0;
+    padding: 13px !important;
+    border-radius: 12px;
+  }
+
+  .stat span {
+    font-size: 11px;
+  }
+
+  .stat strong {
+    font-size: 19px;
+    overflow-wrap: anywhere;
+  }
+
+  .sellerQuickLinks,
+  .adminQuickLinks {
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  .sellerQuickLinks a,
+  .adminQuickLinks a {
+    padding: 13px !important;
+  }
+
+  .panel {
+    border-radius: 14px !important;
+    padding: 14px !important;
+  }
+
+  .sectionHeader {
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .sectionHeader h2 {
+    font-size: 18px;
+  }
+
+  .sellerRecentOrder {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .sellerRecentOrder > div {
+    min-width: 0;
+  }
+
+  .sellerRecentOrder strong,
+  .sellerRecentOrder span {
+    overflow-wrap: anywhere;
+  }
+
+  .sellerRecentOrder > div:last-child {
+    text-align: right;
+  }
+
+  /* Customer account */
+  .accountPage {
+    padding: 22px 12px 50px;
+  }
+
+  .accountHeader {
+    gap: 14px;
+  }
+
+  .accountHeader > div:last-child {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .accountHeader > div:last-child a {
+    text-align: center;
+    margin: 0;
+    min-width: 0;
+    padding: 11px 8px;
+  }
+
+  .accountTabs {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding: 0 12px;
+  }
+
+  .accountTabs button {
+    padding: 12px 14px;
+  }
+
+  .accountCard,
+  .orderCard {
+    width: 100%;
+  }
+
+  .orderCardTop {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .orderCardTop > strong {
+    text-align: right;
+  }
+
+  .tracking {
+    overflow-x: auto;
+    grid-template-columns: repeat(5, minmax(78px, 1fr));
+    padding-bottom: 5px;
+  }
+
+  .trackingLine {
+    left: 39px;
+    right: 39px;
+  }
+
+  .orderItems div {
+    gap: 10px;
+  }
+
+  .orderItems span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 420px) {
+  .portalMain {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .stat {
+    padding: 11px !important;
+  }
+
+  .stat strong {
+    font-size: 17px;
+  }
+
+  .accountHeader > div:last-child {
+    grid-template-columns: 1fr;
+  }
+
+  .accountHeader > div:last-child a {
+    width: 100%;
+  }
+
+  .orderCardTop {
+    grid-template-columns: 1fr;
+  }
+
+  .orderCardTop > strong {
+    text-align: left;
+  }
+}
