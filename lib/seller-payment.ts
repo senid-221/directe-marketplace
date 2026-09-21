@@ -17,7 +17,7 @@ export async function verifyAndFinalizeSellerPayment(txRef: string, transactionI
   const expectedAmount = Number(seller.planAmount || 0);
   const paidAmount = Number(tx?.amount || 0);
 
-  if (!response.ok || data.status !== "success" || tx?.status !== "successful" || tx?.tx_ref !== txRef || tx?.currency !== "RWF" || paidAmount < expectedAmount) {
+  if (!response.ok || data.status !== "success" || tx?.status !== "successful" || tx?.tx_ref !== txRef || tx?.currency !== "RWF" || paidAmount !== expectedAmount) {
     await prisma.seller.update({ where: { id: seller.id }, data: { paymentStatus: "FAILED", paymentTxnId: transactionId } });
     throw new Error("SELLER_PAYMENT_VERIFICATION_FAILED");
   }
