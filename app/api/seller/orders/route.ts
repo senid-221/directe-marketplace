@@ -51,11 +51,19 @@ export async function PATCH(request: Request) {
 
   const order = await prisma.order.findFirst({
     where: { id: orderId, items: { some: { sellerId: seller.id } } },
-    include: { delivery: true },
+    include: { delivery: true, items: { select: { sellerId: true } } },
   });
   if (!order) return NextResponse.json({ error: "Order not found." }, { status: 404 });
 
+  const isSingleSellerOrder = order.items.every((item) => item.sellerId === seller.id);
+
   if (body.deliveryStatus) {
+    if (!isSingleSellerOrder) {
+      return NextResponse.json(
+        { error: "Delivery status for a multi-seller order must be managed by an admin." },
+        { status: 403 }
+      );
+    }
     if (!deliveryStatuses.includes(deliveryStatus)) return NextResponse.json({ error: "Invalid delivery status." }, { status: 400 });
     if (!order.delivery) return NextResponse.json({ error: "Delivery record not found." }, { status: 404 });
 
@@ -84,6 +92,15 @@ export async function PATCH(request: Request) {
   }
 
   if (!sellerStatuses.includes(status)) return NextResponse.json({ error: "Invalid order status." }, { status: 400 });
+  if (!isSingleSellerOrder) {
+    return NextResponse.json(
+      { error: "Order status for a multi-seller order must be managed by an admin." },
+      { status: 403 }
+    );
+  }
+  if (order.status === "PENDING") {
+    return NextResponse.json({ error: "Order must be paid before seller processing." }, { status: 409 });
+  }
   const updated = await prisma.order.update({ where: { id: orderId }, data: { status } });
   return NextResponse.json({ ok: true, status: updated.status });
 }
