@@ -1,7 +1,8 @@
 import { getSiteLogo } from "@/lib/site-settings";
 import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
-import { categoryMedia, productMedia } from "@/lib/product-media";
+import { categoryMedia } from "@/lib/product-media";
+import { prisma } from "@/lib/prisma";
 
 const categoryLinks = [
   ["smartphone", "Phones", "/category/phones", categoryMedia.phones],
@@ -14,19 +15,26 @@ const categoryLinks = [
   ["grid_view", "More", "/categories", categoryMedia.electronics],
 ];
 
-const products = [
-  ["smartphone-128gb","Smartphone 128GB","RWF 289,000","RWF 349,000","4.8","-17%"],
-  ["slim-laptop-156","Slim Laptop 15.6 inch","RWF 579,000","RWF 699,000","4.7","-17%"],
-  ["unisex-running-shoes","Unisex Running Shoes","RWF 39,000","RWF 52,000","4.6","-25%"],
-  ["home-led-lamp","Home LED Lamp","RWF 12,000","RWF 16,000","4.5","-25%"],
-  ["body-oil-250ml","Body Oil 250ml","RWF 15,000","RWF 19,000","4.6","-21%"],
-  ["football-match-ball","Football Match Ball","RWF 18,000","RWF 24,000","4.7","-25%"],
-  ["modern-office-chair","Modern Office Chair","RWF 145,000","RWF 180,000","4.7","-19%"],
-  ["wireless-headphones","Wireless Headphones","RWF 24,500","RWF 35,000","4.8","-30%"],
-];
+
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const logoUrl = await getSiteLogo();
+  let products: any[] = [];
+  try {
+    products = await prisma.product.findMany({
+      where: { published: true, seller: { status: "APPROVED" } },
+      include: { images: { orderBy: { position: "asc" } }, seller: true },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    });
+  } catch (error) {
+    console.error("AkaziConnect homepage products load failed:", error);
+  }
+
+  const deals = products.filter((p) => p.oldPrice && Number(p.oldPrice) > Number(p.price)).slice(0, 5);
+  const recommended = products.filter((p) => !deals.some((d) => d.id === p.id)).slice(0, 5);
   return (
     <div className="shell">
       <header className="header">
@@ -84,16 +92,19 @@ export default async function HomePage() {
         <section className="flash">
           <div className="sectionHeader"><h2><span className="material-symbols-outlined inlineIcon">local_fire_department</span> Flash Deals</h2><a href="/deals">See all deals</a></div>
           <div className="products">
-            {products.slice(0,5).map(([slug,title,price,old,rating,discount]) => (
+            {deals.map((product) => (
               <article className="card" key={title}>
-                <Link href={"/product/"+slug}>
-                  <div className="cardImage"><span className="badge">{discount}</span><img src={productMedia[slug]} alt={title} /></div>
+                <Link href={`/product/${product.slug}`}>
+                  <div className="cardImage">
+                    <span className="badge">DEAL</span>
+                    {product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} /> : "🛍️"}
+                  </div>
                 </Link>
                 <div className="cardBody">
-                  <Link href={"/product/"+slug} className="title">{title}</Link>
-                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {rating} · 100+ sold</div>
-                  <div className="price">{price}<span className="old">{old}</span></div>
-                  <div className="cardFooter"><AddToCartButton productId={slug} /><Link href={"/product/"+slug} className="favorite" style={{display:"grid",placeItems:"center"}}><span className="material-symbols-outlined">favorite_border</span></Link></div>
+                  <Link href={`/product/${product.slug}`} className="title">{product.name}</Link>
+                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div>
+                  <div className="price">RWF {Number(product.price).toLocaleString()}<span className="old">RWF {Number(product.oldPrice).toLocaleString()}</span></div>
+                  <div className="cardFooter"><AddToCartButton productId={product.id} /><Link href={`/product/${product.slug}`} className="favorite" style={{display:"grid",placeItems:"center"}}><span className="material-symbols-outlined">favorite_border</span></Link></div>
                 </div>
               </article>
             ))}
@@ -103,16 +114,18 @@ export default async function HomePage() {
         <section>
           <div className="sectionHeader"><h2>Recommended for you</h2><a href="/products">View more</a></div>
           <div className="products">
-            {products.slice(5).map(([slug,title,price,old,rating,discount]) => (
+            {recommended.map((product) => (
               <article className="card" key={title}>
-                <Link href={"/product/"+slug}>
-                  <div className="cardImage"><span className="badge">{discount}</span><img src={productMedia[slug]} alt={title} /></div>
+                <Link href={`/product/${product.slug}`}>
+                  <div className="cardImage">
+                    {product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} /> : "🛍️"}
+                  </div>
                 </Link>
                 <div className="cardBody">
-                  <Link href={"/product/"+slug} className="title">{title}</Link>
-                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {rating} · Popular</div>
-                  <div className="price">{price}<span className="old">{old}</span></div>
-                  <div className="cardFooter"><AddToCartButton productId={slug} /><Link href={"/product/"+slug} className="favorite" aria-label="View product"><span className="material-symbols-outlined">arrow_forward</span></Link></div>
+                  <Link href={`/product/${product.slug}`} className="title">{product.name}</Link>
+                  <div className="rating"><span className="material-symbols-outlined ratingIcon">star</span> {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div>
+                  <div className="price">RWF {Number(product.price).toLocaleString()}{product.oldPrice ? <span className="old">RWF {Number(product.oldPrice).toLocaleString()}</span> : null}</div>
+                  <div className="cardFooter"><AddToCartButton productId={product.id} /><Link href={`/product/${product.slug}`} className="favorite" aria-label="View product"><span className="material-symbols-outlined">arrow_forward</span></Link></div>
                 </div>
               </article>
             ))}
