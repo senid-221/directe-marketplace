@@ -13,6 +13,7 @@ export async function PATCH(request: Request) {
   const session = await requireAuth(["SELLER"]);
   const seller = await prisma.seller.findUnique({ where: { userId: session.userId } });
   if (!seller) return NextResponse.json({ error:"SELLER_PROFILE_NOT_FOUND" }, { status:404 });
+  if (seller.status !== "APPROVED") return NextResponse.json({ error:"SELLER_NOT_APPROVED" }, { status:403 });
   const body = await request.json();
   const storeName = String(body.storeName || "").trim();
   const description = String(body.description || "").trim();
