@@ -24,7 +24,7 @@ export async function verifyAndFinalizePayment(txRef: string, transactionId: str
     && tx?.status === "successful"
     && tx?.tx_ref === txRef
     && tx?.currency === payment.currency
-    && Number(tx?.amount) >= Number(payment.amount);
+    && Number(tx?.amount) === Number(payment.amount);
 
   if (!valid) {
     await prisma.payment.update({ where: { id: payment.id }, data: { transactionId: String(transactionId), status: tx?.status === "cancelled" ? "CANCELLED" : "FAILED" } });
