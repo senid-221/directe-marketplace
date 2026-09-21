@@ -36,8 +36,8 @@ export async function POST(request: Request) {
   if (!cart.length) return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
 
   for (const item of cart) {
-    if (!item.product.published || item.product.stock < item.quantity) {
-      return NextResponse.json({ error: item.product.stock < item.quantity ? "Some products are out of stock." : "A product is no longer available." }, { status: 409 });
+    if (item.product.seller.status !== "APPROVED" || !item.product.published || item.product.stock < item.quantity) {
+      return NextResponse.json({ error: item.product.seller.status !== "APPROVED" ? "A seller is no longer approved for this product." : item.product.stock < item.quantity ? "Some products are out of stock." : "A product is no longer available." }, { status: 409 });
     }
   }
 
