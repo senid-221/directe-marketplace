@@ -514,3 +514,34 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 
 /* Admin branding */
 .brandingSettings{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:24px;margin-top:18px}.brandingPreview{display:grid;gap:9px}.brandingLogoFrame{min-height:220px;border:1px solid #e8e8e8;border-radius:16px;background:#fff;display:grid;place-items:center;padding:24px;overflow:hidden}.brandingLogoFrame img{max-width:100%;max-height:190px;width:auto;height:auto;object-fit:contain}.brandingControls{display:grid;align-content:start;gap:9px}.uploadLogoButton{display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #ddd;border-radius:10px;padding:12px 14px;font-weight:800;cursor:pointer;background:#fff}.uploadLogoButton input{display:none}.brandingHint{margin:0;color:#777;font-size:12px;line-height:1.5}.brandingActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px}@media(max-width:760px){.brandingSettings{grid-template-columns:1fr}.brandingLogoFrame{min-height:170px}.brandingLogoFrame img{max-height:140px}}
+
+/* Mobile polish for product, cart and checkout */
+@media(max-width:760px){
+  .productPage{grid-template-columns:1fr;gap:22px;margin-top:18px;}
+  .productMainImage{height:360px;border-radius:16px;}
+  .productThumbs{grid-template-columns:repeat(4,1fr);gap:7px;}
+  .productThumb{height:72px;}
+  .productInfo h1{font-size:27px;line-height:1.2;}
+  .productPrice{font-size:27px;margin:14px 0;}
+  .productActions{position:sticky;bottom:8px;z-index:10;background:#fff;padding:9px;border:1px solid #eee;border-radius:13px;box-shadow:0 8px 25px rgba(0,0,0,.08);}
+  .productActions .cta,.productActions .secondaryButton{min-height:46px;}
+  .cartLayout,.checkoutLayout{grid-template-columns:1fr;gap:16px;}
+  .cartItem{grid-template-columns:72px minmax(0,1fr);gap:10px;padding:13px 0;align-items:start;}
+  .cartItemImage{width:72px;height:72px;}
+  .cartItemInfo{min-width:0;}
+  .cartItemInfo strong{font-size:13px;line-height:1.3;display:block;}
+  .cartItem .quantity{grid-column:2;margin:2px 0 0;gap:10px;}
+  .cartItem .quantity button{width:32px;height:32px;}
+  .cartItem .remove{grid-column:2;justify-self:start;font-size:12px;padding:0;}
+  .summary{position:static;top:auto;padding:16px;border-radius:14px;}
+  .checkoutCard{padding:16px;border-radius:14px;}
+  .checkoutCard h2{font-size:20px;}
+  .formGrid{grid-template-columns:1fr;gap:12px;}
+  .paymentOption{min-height:48px;}
+}
+@media(max-width:420px){
+  .productMainImage{height:300px;}
+  .productActions{gap:6px;padding:7px;}
+  .productActions .cta,.productActions .secondaryButton{padding:11px 8px;font-size:12px;}
+  .cartItem .cartPrice{font-size:13px;}
+}
