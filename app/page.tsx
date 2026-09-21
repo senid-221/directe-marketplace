@@ -93,7 +93,7 @@ export default async function HomePage() {
           <div className="sectionHeader"><h2><span className="material-symbols-outlined inlineIcon">local_fire_department</span> Flash Deals</h2><a href="/deals">See all deals</a></div>
           <div className="products">
             {deals.map((product) => (
-              <article className="card" key={title}>
+              <article className="card" key={product.id}>
                 <Link href={`/product/${product.slug}`}>
                   <div className="cardImage">
                     <span className="badge">DEAL</span>
@@ -115,7 +115,7 @@ export default async function HomePage() {
           <div className="sectionHeader"><h2>Recommended for you</h2><a href="/products">View more</a></div>
           <div className="products">
             {recommended.map((product) => (
-              <article className="card" key={title}>
+              <article className="card" key={product.id}>
                 <Link href={`/product/${product.slug}`}>
                   <div className="cardImage">
                     {product.images[0] ? <img src={product.images[0].url} alt={product.images[0].alt || product.name} /> : "🛍️"}
