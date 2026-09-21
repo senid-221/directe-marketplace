@@ -40,8 +40,8 @@ export default async function HomePage() {
           </form>
 
           <div className="headerActions">
-            <button className="iconButton" aria-label="Wishlist"><span className="material-symbols-outlined">favorite_border</span></button>
-            <button className="iconButton" aria-label="Cart"><span className="material-symbols-outlined">shopping_cart</span></button>
+            <Link href="/wishlist" className="iconButton" aria-label="Wishlist"><span className="material-symbols-outlined">favorite_border</span></Link>
+            <Link href="/cart" className="iconButton" aria-label="Cart"><span className="material-symbols-outlined">shopping_cart</span></Link>
             <a href="/account" className="iconButton">Account</a>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default async function HomePage() {
           <div className="navInner">
             <a href="/categories">All Categories</a><a href="/deals">Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
             <a href="/best-sellers">Best Sellers</a><a href="/category/fashion">Fashion</a><a href="/category/electronics">Electronics</a>
-            <a href="/category/home">Home & Living</a><a href="/seller/apply">Become a Seller</a>
+            <a href="/category/home">Home & Living</a><Link href="/seller/apply">Become a Seller</Link>
           </div>
         </nav>
       </header>
@@ -124,8 +124,8 @@ export default async function HomePage() {
         <div className="footerInner">
           <div><h3>AkaziConnect</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
           <div><h3>Shop</h3><a href="/categories">Categories</a><a href="/deals">Flash Deals</a><a href="/best-sellers">Best Sellers</a></div>
-          <div><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><a href="#">Seller Center</a><a href="#">Seller Support</a></div>
-          <div><h3>Help</h3><a href="#">Orders</a><a href="#">Delivery</a><a href="#">Contact Support</a></div>
+          <div><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><Link href="/seller">Seller Center</Link><Link href="/seller/support">Seller Support</Link></div>
+          <div><h3>Help</h3><Link href="/account?tab=orders">Orders</Link><Link href="/account?tab=orders">Delivery</Link><Link href="/support">Contact Support</Link></div>
         </div>
       </footer>
     </div>
