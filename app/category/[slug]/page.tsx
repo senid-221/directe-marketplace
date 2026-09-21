@@ -35,7 +35,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       include: {
         children: true,
         products: {
-          where: { published: true },
+          where: { published: true, seller: { status: "APPROVED" } },
           include: { images: { orderBy: { position: "asc" } }, seller: true },
           orderBy: { createdAt: "desc" },
           take: 40,
