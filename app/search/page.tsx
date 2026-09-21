@@ -8,7 +8,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const term = q.trim();
   const products = term
     ? await prisma.product.findMany({
-        where: { published: true, OR: [
+        where: { published: true, seller: { status: "APPROVED" }, OR: [
           { name: { contains: term, mode: "insensitive" } },
           { description: { contains: term, mode: "insensitive" } },
           { slug: { contains: term.toLowerCase(), mode: "insensitive" } },
