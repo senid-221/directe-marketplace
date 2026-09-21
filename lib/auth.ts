@@ -5,7 +5,11 @@ import { prisma } from "./prisma";
 type Session = { userId: string; role: "CUSTOMER" | "SELLER" | "ADMIN"; iat: number };
 
 function secret() {
-  return process.env.JWT_SECRET || "change-this-in-production";
+  const value = process.env.JWT_SECRET;
+  if (!value || value.length < 32) {
+    throw new Error("JWT_SECRET must be configured with at least 32 characters.");
+  }
+  return value;
 }
 
 export function hashPassword(password: string) {
@@ -18,7 +22,8 @@ export function verifyPassword(password: string, stored: string) {
   const [salt, expected] = stored.split(":");
   if (!salt || !expected) return false;
   const actual = createHmac("sha256", salt).update(password).digest("hex");
-  return actual === expected;
+  if (actual.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(actual), Buffer.from(expected));
 }
 
 export function createSessionToken(userId: string, role: Session["role"]) {
@@ -33,7 +38,7 @@ function parseSession(token?: string): Session | null {
   if (!payload || !signature) return null;
   const expected = createHmac("sha256", secret()).update(payload).digest("base64url");
   try {
-    if (!timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
+    if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
     const session = JSON.parse(Buffer.from(payload, "base64url").toString()) as Session;
     if (!session.userId || !session.role || Date.now() - session.iat > 1000 * 60 * 60 * 24 * 30) return null;
     return session;
@@ -44,7 +49,11 @@ function parseSession(token?: string): Session | null {
 
 export async function getSession() {
   const store = await cookies();
-  return parseSession(store.get("directe_session")?.value);
+  try {
+    return parseSession(store.get("directe_session")?.value);
+  } catch {
+    return null;
+  }
 }
 
 export async function requireAuth(roles?: Session["role"][]) {
