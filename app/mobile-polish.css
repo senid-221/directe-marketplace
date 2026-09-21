@@ -38,7 +38,6 @@
   .orderItems div { gap:10px; }
   .orderItems span { min-width:0; overflow-wrap:anywhere; }
 
-  /* Seller/Admin product tables become compact cards on phones. */
   .sellerProductTableWrap,.adminTableWrap { overflow:visible !important; }
   .sellerProductTableWrap table,.adminTableWrap table { min-width:0 !important; width:100%; }
   .sellerProductTableWrap thead,.adminTableWrap thead { display:none; }
@@ -59,7 +58,6 @@
   .sellerProductTools input { width:100% !important; min-width:0; }
   .sellerProductTools .compactCta { white-space:nowrap; }
 
-  /* Order cards */
   .sellerOrderCard { padding:14px !important; border-radius:14px; }
   .sellerOrderTop { gap:9px; }
   .sellerOrderTop strong { font-size:13px; }
@@ -76,6 +74,30 @@
   .sellerProductForm { grid-template-columns:1fr !important; }
   .sellerProductForm label.full,.sellerFormActions { grid-column:auto !important; }
   .sellerProductForm input,.sellerProductForm select,.sellerProductForm textarea { font-size:16px; }
+
+  /* Seller inventory */
+  .portalMain > .panel table { width:100%; }
+  .stockInput { width:90px; max-width:100%; }
+  .portalMain > .panel table tbody tr { vertical-align:top; }
+
+  /* Admin customers/payments/sellers */
+  .adminTableWrap table { font-size:12px; }
+  .adminTableWrap td strong { overflow-wrap:anywhere; }
+  .adminStatusSelect { width:100%; max-width:150px; }
+  .adminCategoryAdd { display:grid !important; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+  .adminCategoryAdd input { max-width:none !important; min-width:0; width:100%; font-size:16px; }
+  .adminCategoryAdd .compactCta { margin:0; white-space:nowrap; }
+}
+
+@media (max-width: 600px) {
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap tr { grid-template-columns:minmax(0,1fr) auto; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(1) { grid-column:1/-1; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(2) { font-size:12px; color:#555; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(3) { font-weight:700; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(4) { justify-self:end; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(5) { font-size:11px; color:#777; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(6) { font-size:11px; color:#777; }
+  .portalMain > .panel:has(.adminTableWrap) .adminTableWrap td:nth-child(7) { grid-column:1/-1; }
 }
 
 @media (max-width: 420px) {
@@ -88,4 +110,6 @@
   .orderCardTop { grid-template-columns:1fr; }
   .orderCardTop>strong { text-align:left; }
   .sellerOrderControls { grid-template-columns:1fr !important; }
+  .adminCategoryAdd { grid-template-columns:1fr; }
+  .adminCategoryAdd .compactCta { width:100%; }
 }
