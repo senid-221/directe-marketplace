@@ -3,6 +3,11 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+function safeNext(value: string | null, fallback = "/account") {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return fallback;
+  return value;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [phoneMode, setPhoneMode] = useState(false);
@@ -49,9 +54,8 @@ export default function LoginPage() {
         return;
       }
 
-      const next = data.user?.role === "ADMIN"
-        ? "/admin"
-        : new URLSearchParams(window.location.search).get("next") || "/account";
+      const requestedNext = new URLSearchParams(window.location.search).get("next");
+      const next = data.user?.role === "ADMIN" ? "/admin" : safeNext(requestedNext);
       router.replace(next);
       router.refresh();
     } catch {
@@ -71,68 +75,28 @@ export default function LoginPage() {
     <main className="authPage">
       <div className="authCard">
         <div className="brand">
-          <img
-            key={`${logoUrl}-${logoVersion}`}
-            src={logoUrl}
-            alt="AkaziConnect"
-            className="brandLogo"
-          />
+          <img key={`${logoUrl}-${logoVersion}`} src={logoUrl} alt="AkaziConnect" className="brandLogo" />
         </div>
-
         <h1>Welcome back</h1>
         <p>Sign in to manage your shopping, orders and account.</p>
-
         <form onSubmit={submit} style={{ display: "grid", gap: 14 }}>
           <label>
             {phoneMode ? "Phone number" : "Phone or email"}
-            <input
-              value={identifier}
-              onChange={(event) => setIdentifier(event.target.value)}
-              type={phoneMode ? "tel" : "text"}
-              inputMode={phoneMode ? "tel" : "text"}
-              autoComplete={phoneMode ? "tel" : "username"}
-              placeholder={phoneMode ? "+250 7XX XXX XXX" : "Phone or email"}
-              required
-            />
+            <input value={identifier} onChange={(event) => setIdentifier(event.target.value)} type={phoneMode ? "tel" : "text"} inputMode={phoneMode ? "tel" : "text"} autoComplete={phoneMode ? "tel" : "username"} placeholder={phoneMode ? "+250 7XX XXX XXX" : "Phone or email"} required />
           </label>
-
           <label>
             Password
-            <input
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              type="password"
-              autoComplete="current-password"
-              placeholder="Password"
-              required
-            />
+            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" autoComplete="current-password" placeholder="Password" required />
           </label>
-
           {error && <div className="authError" role="alert">{error}</div>}
-
-          <button className="cta" style={{ width: "100%" }} type="submit" disabled={loading}>
-            {loading ? "Signing in..." : "Login"}
-          </button>
+          <button className="cta" style={{ width: "100%" }} type="submit" disabled={loading}>{loading ? "Signing in..." : "Login"}</button>
         </form>
-
         <div className="authDivider">or</div>
-
         {!phoneMode ? (
-          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={enablePhoneLogin}>
-            <span className="material-symbols-outlined inlineIcon">phone</span>
-            Continue with phone
-          </button>
+          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={enablePhoneLogin}><span className="material-symbols-outlined inlineIcon">phone</span>Continue with phone</button>
         ) : (
-          <button
-            className="secondaryButton"
-            style={{ width: "100%" }}
-            type="button"
-            onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}
-          >
-            Use email instead
-          </button>
+          <button className="secondaryButton" style={{ width: "100%" }} type="button" onClick={() => { setPhoneMode(false); setIdentifier(""); setError(""); }}>Use email instead</button>
         )}
-
         <small>By continuing, you agree to AkaziConnect terms and privacy policy.</small>
       </div>
     </main>
