@@ -9,7 +9,12 @@ export async function POST(request: Request) {
   const signature = request.headers.get("flutterwave-signature");
   if (secretHash) {
     const expected = crypto.createHmac("sha256", secretHash).update(raw).digest("base64");
-    if (!signature || signature !== expected) return new NextResponse("Invalid signature", { status: 401 });
+    if (!signature) return new NextResponse("Invalid signature", { status: 401 });
+    const provided = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expected);
+    if (provided.length !== expectedBuffer.length || !crypto.timingSafeEqual(provided, expectedBuffer)) {
+      return new NextResponse("Invalid signature", { status: 401 });
+    }
   } else {
     const legacy = request.headers.get("verif-hash");
     if (!legacy || legacy !== process.env.FLW_SECRET_HASH) return new NextResponse("Webhook secret not configured", { status: 401 });
