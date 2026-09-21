@@ -7,7 +7,7 @@ export default async function ProductsPage() {
   let products: any[] = [];
   try {
     products = await prisma.product.findMany({
-      where: { published: true },
+      where: { published: true, seller: { status: "APPROVED" } },
       include: { images: { orderBy: { position: "asc" } }, seller: true },
       orderBy: { createdAt: "desc" },
       take: 60,
