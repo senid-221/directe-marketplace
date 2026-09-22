@@ -4,7 +4,7 @@ import "./mobile-polish.css";
 
 export const metadata: Metadata = {
   title: "AkaziConnect — Rwanda Marketplace",
-  description: "Connect with products, services and trusted sellers across Rwanda.",
+  description: "Rwanda-first marketplace connecting customers with trusted sellers and products.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
