@@ -38,6 +38,12 @@ export default async function HomePage() {
 
   const deals = products.filter((p) => p.oldPrice && Number(p.oldPrice) > Number(p.price)).slice(0, 5);
   const recommended = products.filter((p) => !deals.some((d) => d.id === p.id)).slice(0, 5);
+  const quickLinks = [
+    { href: "/new-arrivals", icon: "new_releases", label: "New arrivals" },
+    { href: "/best-sellers", icon: "trending_up", label: "Best sellers" },
+    { href: "/deals", icon: "local_offer", label: "Today's deals" },
+    { href: "/seller/apply", icon: "storefront", label: "Sell on AkaziConnect" },
+  ];
   return (
     <div className="shell">
       <header className="header">
@@ -77,6 +83,10 @@ export default async function HomePage() {
             <div className="promo"><div style={{fontSize:13,fontWeight:800}}><span className="material-symbols-outlined inlineIcon">local_fire_department</span> FLASH DEALS</div><div style={{fontSize:27,fontWeight:800,marginTop:8}}>Up to 50% off</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Limited-time marketplace offers</div></div>
             <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--akazi-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on {businessName}</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
           </div>
+        </section>
+
+        <section className="quickLinks">
+          {quickLinks.map((item) => <Link href={item.href} className="quickLink" key={item.href}><span className="material-symbols-outlined">{item.icon}</span><span>{item.label}</span><span className="material-symbols-outlined arrow">arrow_forward</span></Link>)}
         </section>
 
         <section>
