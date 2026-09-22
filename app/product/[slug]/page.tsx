@@ -12,7 +12,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const product = await prisma.product.findFirst({
     where: { slug, published: true, seller: { status: "APPROVED" } },
-    include: { images: { orderBy: { position: "asc" } }, seller: true, category: true, reviews: true },
+    include: { images: { orderBy: { position: "asc" } }, seller: true, category: true, reviews: true, variants: { orderBy: { name: "asc" } } },
   });
 
   if (!product) {
@@ -41,7 +41,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             RWF {Number(product.price).toLocaleString()}
             {product.oldPrice && <span>RWF {Number(product.oldPrice).toLocaleString()}</span>}
           </div>
-          <div className="stock">{product.stock > 0 ? `✓ In stock · ${product.stock} available` : "Out of stock"}</div>
+          <div className="stock">{product.stock > 0 ? `✓ In stock · ${product.stock} available` : "Out of stock"}</div>{product.variants.length > 0 && <div className="variantPicker"><strong>Options</strong><div>{product.variants.map((variant) => <span key={variant.id} className="subCategoryChip">{variant.name}{variant.price ? ` · RWF ${Number(variant.price).toLocaleString()}` : ""}</span>)}</div></div>}
           <p>{product.description || "Quality product available on AkaziConnect."}</p>
           <div className="featureList">
             <div>✓ Trusted AkaziConnect seller</div>
@@ -49,7 +49,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div>✓ Secure checkout</div>
           </div>
           <div className="sellerBox"><strong>Seller</strong><div>{product.seller.storeName}</div><small>AkaziConnect marketplace seller</small></div>
-          <div className="productActions">
+          <div className="productActions"><button className="secondaryButton" onClick={async () => { await fetch("/api/price-alerts", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ productId: product.id }) }); }}>Notify me on price drop</button>
             {product.stock > 0 ? <AddToCartButton productId={product.id} className="cta">Add to cart</AddToCartButton> : <button className="cta" disabled>Out of stock</button>}
             {product.stock > 0 ? <BuyNowButton productId={product.id} /> : null}
           </div>
