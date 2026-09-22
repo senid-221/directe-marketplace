@@ -58,9 +58,9 @@ export default async function HomePage() {
         </div>
         <nav className="nav">
           <div className="navInner">
-            <a href="/categories">All Categories</a><a href="/deals">Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
+            <a href="/categories"><span className="material-symbols-outlined inlineIcon">category</span> All Categories</a><a href="/deals"><span className="material-symbols-outlined inlineIcon">local_fire_department</span> Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
             <a href="/best-sellers">Best Sellers</a><a href="/category/fashion">Fashion</a><a href="/category/electronics">Electronics</a>
-            <a href="/category/home">Home & Living</a><Link href="/seller/apply">Become a Seller</Link>
+            <a href="/category/home">Home & Living</a><Link href="/seller/apply" className="sellerNavLink"><span className="material-symbols-outlined inlineIcon">storefront</span> Become a Seller</Link>
           </div>
         </nav>
       </header>
