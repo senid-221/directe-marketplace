@@ -63,6 +63,7 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
           district: district.trim(),
           sector: sector.trim(),
           address: address.trim(),
+          couponCode: coupon.trim() || undefined,
         }),
       });
 
