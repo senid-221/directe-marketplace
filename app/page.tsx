@@ -135,10 +135,10 @@ export default async function HomePage() {
 
       <footer className="footer">
         <div className="footerInner">
-          <div className="footerColumn"><h3>AkaziConnect</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
-          <div className="footerColumn"><h3>Shop</h3><a href="/categories">Categories</a><a href="/deals">Flash Deals</a><a href="/best-sellers">Best Sellers</a></div>
-          <div className="footerColumn"><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><Link href="/seller">Seller Center</Link><Link href="/seller/support">Seller Support</Link></div>
-          <div className="footerColumn"><h3>Help</h3><Link href="/account?tab=orders">Orders</Link><Link href="/account?tab=orders">Delivery</Link><Link href="/support">Contact Support</Link></div>
+          <div><h3>AkaziConnect</h3><p>Rwanda-first marketplace connecting customers with trusted sellers and products.</p></div>
+          <div><h3>Shop</h3><a href="/categories">Categories</a><a href="/deals">Flash Deals</a><a href="/best-sellers">Best Sellers</a></div>
+          <div><h3>Sell</h3><a href="/seller/apply">Become a Seller</a><Link href="/seller">Seller Center</Link><Link href="/seller/support">Seller Support</Link></div>
+          <div><h3>Help</h3><Link href="/account?tab=orders">Orders</Link><Link href="/account?tab=orders">Delivery</Link><Link href="/support">Contact Support</Link></div>
         </div>
       </footer>
     </div>
