@@ -552,3 +552,18 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
   .productActions .cta,.productActions .secondaryButton{padding:11px 8px;font-size:12px;}
   .cartItem .cartPrice{font-size:13px;}
 }
+
+
+/* Homepage polish */
+.navInner a{display:inline-flex;align-items:center;gap:5px}
+.inlineIcon{font-size:17px;vertical-align:-3px}
+.sellerNavLink{color:var(--akazi-orange);font-weight:800}
+.headerActions .iconButton{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.headerActions .iconButton .material-symbols-outlined{font-size:20px}
+.heroMain{box-shadow:0 10px 35px rgba(17,17,17,.05)}
+.promo{box-shadow:0 8px 25px rgba(17,17,17,.05)}
+.category{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.category:hover{transform:translateY(-2px);border-color:#ffd3c2;box-shadow:0 8px 18px rgba(17,17,17,.06)}
+.card{transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,17,17,.08)}
+.badge{letter-spacing:.03em}
