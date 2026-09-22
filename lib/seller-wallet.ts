@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
 export function sellerNetAmount(item: { quantity: number; unitPrice: unknown }, commissionPercent: number) {
@@ -24,6 +25,11 @@ export async function creditSellerWalletsForOrder(orderId: string) {
   for (const [sellerId, amount] of grouped) {
     if (amount <= 0) continue;
     await prisma.$transaction(async (db) => {
+      const existingSale = await db.sellerLedgerEntry.findFirst({
+        where: { sellerWallet: { sellerId }, orderId, type: "SALE" },
+      });
+      if (existingSale) return;
+
       const wallet = await db.sellerWallet.upsert({
         where: { sellerId },
         update: {
@@ -42,7 +48,7 @@ export async function creditSellerWalletsForOrder(orderId: string) {
           type: "SALE",
           amount,
           orderId,
-          note: "Seller net sale credited after payment.",
+          note: "Seller net sale credited after successful payment.",
         },
       });
     });
@@ -92,7 +98,7 @@ export async function requestSellerPayout(sellerId: string, amount: number) {
         recipient: {
           type: "MMO",
           accountDetails: {
-            phoneNumber: phone.replace(/^0/, "+250").replace(/^250/, "+250"),
+            phoneNumber: phone.replace(/\D/g, "").replace(/^0/, "+250").replace(/^250/, "+250"),
             provider: seller.payoutProvider || "MTN_MOMO_RWA",
           },
         },
@@ -138,7 +144,7 @@ export async function requestSellerPayout(sellerId: string, amount: number) {
         availableBalance: { increment: amount },
         pendingBalance: { decrement: amount },
       },
-    });
+    }).catch(() => null);
     throw error;
   }
 }
