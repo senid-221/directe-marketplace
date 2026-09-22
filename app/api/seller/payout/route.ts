@@ -37,6 +37,7 @@ export async function POST(request: Request) {
   const token = process.env.PAWAPAY_API_TOKEN;
   const baseUrl = (process.env.PAWAPAY_API_URL || "https://api.sandbox.pawapay.io").replace(/\/$/, "");
   if (!token) return NextResponse.json({ error: "PawaPay is not configured." }, { status: 503 });
+  if (session.role === "ADMIN" && !requestedSellerId) return NextResponse.json({ error: "sellerId is required for admin payouts." }, { status: 400 });
 
   const payoutId = crypto.randomUUID();
 
