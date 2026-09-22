@@ -25,8 +25,12 @@ type CategoryProduct = {
   };
 };
 
-export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ sort?: string; min?: string; max?: string }> }) {
   const { slug } = await params;
+  const filters = await searchParams;
+  const sort = filters.sort || "newest";
+  const min = Number(filters.min || 0);
+  const max = Number(filters.max || 0);
   let category = null;
 
   try {
@@ -37,7 +41,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         products: {
           where: { published: true, seller: { status: "APPROVED" } },
           include: { images: { orderBy: { position: "asc" } }, seller: true },
-          orderBy: { createdAt: "desc" },
+          orderBy: sort === "price_asc" ? { price: "asc" } : sort === "price_desc" ? { price: "desc" } : { createdAt: "desc" },
           take: 40,
         },
       },
@@ -62,7 +66,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <main style={{maxWidth:1280,margin:"0 auto",padding:"30px 20px 60px"}}>
       <Link href="/categories" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}><span className="material-symbols-outlined inlineIcon">arrow_back</span> All Categories</Link>
-      <div className="sectionHeader"><h1>{category.name}</h1></div>
+      <div className="sectionHeader"><h1>{category.name}</h1><form className="categoryFilters" method="get"><select name="sort" defaultValue={sort}><option value="newest">Newest</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option></select><input name="min" defaultValue={filters.min || ""} placeholder="Min RWF" inputMode="numeric" /><input name="max" defaultValue={filters.max || ""} placeholder="Max RWF" inputMode="numeric" /><button className="secondaryButton" type="submit">Filter</button></form></div>
       {children.length > 0 && (
         <div className="subCategoryRow">
           {children.map((sub: CategoryChild) => <Link key={sub.id} href={`/category/${sub.slug}`} className="subCategoryChip">{sub.name}</Link>)}
