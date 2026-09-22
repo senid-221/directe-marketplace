@@ -17,13 +17,31 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
   const { productId, quantity = 1 } = await request.json();
-  const product = await prisma.product.findFirst({ where: { OR: [{ id: productId }, { slug: productId }], published: true } });
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+  }
+
+  const product = await prisma.product.findFirst({
+    where: {
+      OR: [{ id: productId }, { slug: productId }],
+      published: true,
+      seller: { status: "APPROVED" },
+    },
+  });
   if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
-  if (product.stock < quantity) return NextResponse.json({ error: "Not enough stock" }, { status: 400 });
+
+  const existing = await prisma.cartItem.findUnique({
+    where: { userId_productId: { userId: session.userId, productId: product.id } },
+    select: { quantity: true },
+  });
+  const nextQuantity = (existing?.quantity ?? 0) + quantity;
+  if (product.stock < nextQuantity) {
+    return NextResponse.json({ error: "Not enough stock" }, { status: 400 });
+  }
 
   const item = await prisma.cartItem.upsert({
     where: { userId_productId: { userId: session.userId, productId: product.id } },
-    update: { quantity: { increment: quantity } },
+    update: { quantity: nextQuantity },
     create: { userId: session.userId, productId: product.id, quantity }
   });
   return NextResponse.json({ ok: true, item });
@@ -33,7 +51,15 @@ export async function PATCH(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
   const { productId, quantity } = await request.json();
-  if (!Number.isInteger(quantity) || quantity < 1) return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+  if (!productId || !Number.isInteger(quantity) || quantity < 1) {
+    return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+  }
+  const product = await prisma.product.findFirst({
+    where: { id: productId, published: true, seller: { status: "APPROVED" } },
+    select: { id: true, stock: true },
+  });
+  if (!product) return NextResponse.json({ error: "Product not available" }, { status: 404 });
+  if (quantity > product.stock) return NextResponse.json({ error: "Not enough stock" }, { status: 400 });
   const item = await prisma.cartItem.updateMany({ where: { userId: session.userId, productId }, data: { quantity } });
   return NextResponse.json({ ok: true, count: item.count });
 }
