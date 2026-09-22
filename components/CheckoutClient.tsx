@@ -19,6 +19,9 @@ type Props = {
 export default function CheckoutClient({ items, subtotal, delivery, total }: Props) {
   const [busy, setBusy] = useState(false);
   const [payment, setPayment] = useState("momo");
+  const [coupon, setCoupon] = useState("");
+  const [couponMessage, setCouponMessage] = useState("");
+  const [discount, setDiscount] = useState(0);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [province, setProvince] = useState("Kigali City");
@@ -26,6 +29,18 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
   const [sector, setSector] = useState("");
   const [address, setAddress] = useState("");
   const router = useRouter();
+
+  async function applyCoupon() {
+    setCouponMessage("");
+    if (!coupon.trim()) return;
+    try {
+      const response = await fetch("/api/coupons/validate", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ code: coupon, subtotal }) });
+      const data = await response.json();
+      if (!response.ok) { setDiscount(0); setCouponMessage(data.error || "Invalid coupon."); return; }
+      setDiscount(Number(data.discount || 0));
+      setCouponMessage("Coupon applied.");
+    } catch { setCouponMessage("Could not validate coupon."); }
+  }
 
   async function pay() {
     if (!fullName.trim() || !phone.trim() || !province.trim() || !district.trim() || !sector.trim() || !address.trim()) {
@@ -76,6 +91,8 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
     }
   }
 
+  const finalTotal = Math.max(0, total - discount);
+
   return (
     <div className="checkoutLayout">
       <section className="checkoutCard">
@@ -95,9 +112,9 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
         <label className="paymentOption"><input type="radio" name="p" value="bank" checked={payment === "bank"} onChange={() => setPayment("bank")} /> Banking</label>
         <label className="paymentOption"><input type="radio" name="p" value="card" checked={payment === "card"} onChange={() => setPayment("card")} /> Credit / Debit Card</label>
 
-        <p className="paymentNote">Delivery fee is currently RWF {delivery.toLocaleString()}. Payment is completed through the secure payment page.</p>
+        <div className="couponRow"><input value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} placeholder="Coupon code" /><button type="button" className="secondaryButton" onClick={applyCoupon}>Apply</button></div>{couponMessage && <p className="paymentNote">{couponMessage}</p>}<p className="paymentNote">Delivery fee is currently RWF {delivery.toLocaleString()}. Payment is completed through the secure payment page.</p>
         <button className="cta" onClick={pay} disabled={busy} style={{marginTop:18,width:"100%"}}>
-          {busy ? "Opening secure payment..." : "Pay securely · RWF " + total.toLocaleString()}
+          {busy ? "Opening secure payment..." : "Pay securely · RWF " + finalTotal.toLocaleString()}
         </button>
       </section>
 
@@ -112,7 +129,7 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
         <div><span>Subtotal</span><strong>RWF {subtotal.toLocaleString()}</strong></div>
         <div><span>Delivery</span><strong>RWF {delivery.toLocaleString()}</strong></div>
         <hr />
-        <div className="grand"><span>Total</span><strong>RWF {total.toLocaleString()}</strong></div>
+        {discount > 0 && <div><span>Coupon discount</span><strong>- RWF {discount.toLocaleString()}</strong></div>}<div className="grand"><span>Total</span><strong>RWF {finalTotal.toLocaleString()}</strong></div>
       </aside>
     </div>
   );
