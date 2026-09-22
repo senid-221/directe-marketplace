@@ -1,0 +1,43 @@
+CREATE TYPE "PromotionType" AS ENUM ('PERCENT','FIXED','FLASH_SALE');
+CREATE TYPE "NotificationType" AS ENUM ('ORDER','PAYMENT','DELIVERY','PROMOTION','PRICE_DROP','SYSTEM');
+CREATE TYPE "ReturnStatus" AS ENUM ('REQUESTED','APPROVED','REJECTED','RECEIVED','REFUNDED','CANCELLED');
+CREATE TYPE "DiscountScope" AS ENUM ('ORDER','PRODUCT','CATEGORY');
+
+CREATE TABLE "ProductVariant" ("id" TEXT NOT NULL,"productId" TEXT NOT NULL,"name" TEXT NOT NULL,"price" DECIMAL,"stock" INTEGER NOT NULL DEFAULT 0,"sku" TEXT,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "ProductVariant_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Promotion" ("id" TEXT NOT NULL,"sellerId" TEXT,"name" TEXT NOT NULL,"type" "PromotionType" NOT NULL,"scope" "DiscountScope" NOT NULL DEFAULT 'PRODUCT',"value" DECIMAL NOT NULL,"startAt" TIMESTAMP(3) NOT NULL,"endAt" TIMESTAMP(3) NOT NULL,"active" BOOLEAN NOT NULL DEFAULT true,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "Promotion_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "PromotionProduct" ("id" TEXT NOT NULL,"promotionId" TEXT NOT NULL,"productId" TEXT NOT NULL,CONSTRAINT "PromotionProduct_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Coupon" ("id" TEXT NOT NULL,"sellerId" TEXT,"code" TEXT NOT NULL,"type" "PromotionType" NOT NULL DEFAULT 'PERCENT',"value" DECIMAL NOT NULL,"maxDiscount" DECIMAL,"minOrderAmount" DECIMAL,"usageLimit" INTEGER,"usedCount" INTEGER NOT NULL DEFAULT 0,"perUserLimit" INTEGER NOT NULL DEFAULT 1,"startAt" TIMESTAMP(3),"endAt" TIMESTAMP(3),"active" BOOLEAN NOT NULL DEFAULT true,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "Coupon_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "CouponUsage" ("id" TEXT NOT NULL,"couponId" TEXT NOT NULL,"userId" TEXT NOT NULL,"orderId" TEXT,"discount" DECIMAL NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "CouponUsage_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Notification" ("id" TEXT NOT NULL,"userId" TEXT NOT NULL,"type" "NotificationType" NOT NULL,"title" TEXT NOT NULL,"message" TEXT NOT NULL,"link" TEXT,"readAt" TIMESTAMP(3),"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "Notification_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "PriceAlert" ("id" TEXT NOT NULL,"userId" TEXT NOT NULL,"productId" TEXT NOT NULL,"targetPrice" DECIMAL,"active" BOOLEAN NOT NULL DEFAULT true,"triggeredAt" TIMESTAMP(3),"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "PriceAlert_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "ReturnRequest" ("id" TEXT NOT NULL,"orderId" TEXT NOT NULL,"userId" TEXT NOT NULL,"reason" TEXT NOT NULL,"notes" TEXT,"status" "ReturnStatus" NOT NULL DEFAULT 'REQUESTED',"requestedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"resolvedAt" TIMESTAMP(3),CONSTRAINT "ReturnRequest_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "ReturnRequestItem" ("id" TEXT NOT NULL,"returnRequestId" TEXT NOT NULL,"productId" TEXT NOT NULL,"quantity" INTEGER NOT NULL,CONSTRAINT "ReturnRequestItem_pkey" PRIMARY KEY ("id"));
+
+CREATE UNIQUE INDEX "ProductVariant_sku_key" ON "ProductVariant"("sku");
+CREATE INDEX "ProductVariant_productId_idx" ON "ProductVariant"("productId");
+CREATE INDEX "Promotion_active_startAt_endAt_idx" ON "Promotion"("active","startAt","endAt");
+CREATE UNIQUE INDEX "PromotionProduct_promotionId_productId_key" ON "PromotionProduct"("promotionId","productId");
+CREATE UNIQUE INDEX "Coupon_code_key" ON "Coupon"("code");
+CREATE UNIQUE INDEX "CouponUsage_orderId_key" ON "CouponUsage"("orderId");
+CREATE UNIQUE INDEX "CouponUsage_couponId_userId_orderId_key" ON "CouponUsage"("couponId","userId","orderId");
+CREATE INDEX "Notification_userId_readAt_idx" ON "Notification"("userId","readAt");
+CREATE UNIQUE INDEX "PriceAlert_userId_productId_key" ON "PriceAlert"("userId","productId");
+CREATE INDEX "PriceAlert_userId_active_idx" ON "PriceAlert"("userId","active");
+CREATE INDEX "ReturnRequest_orderId_status_idx" ON "ReturnRequest"("orderId","status");
+CREATE INDEX "ReturnRequest_userId_requestedAt_idx" ON "ReturnRequest"("userId","requestedAt");
+
+ALTER TABLE "ProductVariant" ADD CONSTRAINT "ProductVariant_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Promotion" ADD CONSTRAINT "Promotion_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "Seller"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "PromotionProduct" ADD CONSTRAINT "PromotionProduct_promotionId_fkey" FOREIGN KEY ("promotionId") REFERENCES "Promotion"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PromotionProduct" ADD CONSTRAINT "PromotionProduct_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Coupon" ADD CONSTRAINT "Coupon_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "Seller"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "CouponUsage" ADD CONSTRAINT "CouponUsage_couponId_fkey" FOREIGN KEY ("couponId") REFERENCES "Coupon"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CouponUsage" ADD CONSTRAINT "CouponUsage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CouponUsage" ADD CONSTRAINT "CouponUsage_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PriceAlert" ADD CONSTRAINT "PriceAlert_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PriceAlert" ADD CONSTRAINT "PriceAlert_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ReturnRequest" ADD CONSTRAINT "ReturnRequest_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ReturnRequest" ADD CONSTRAINT "ReturnRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ReturnRequestItem" ADD CONSTRAINT "ReturnRequestItem_returnRequestId_fkey" FOREIGN KEY ("returnRequestId") REFERENCES "ReturnRequest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ReturnRequestItem" ADD CONSTRAINT "ReturnRequestItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
