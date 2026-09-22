@@ -76,6 +76,7 @@ enum DiscountScope {
 model SiteSetting {
   id String @id @default("default")
   logoUrl String?
+  businessProfile Json?
   updatedAt DateTime @updatedAt
 }
 model User {
