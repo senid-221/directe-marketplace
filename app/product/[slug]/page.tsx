@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { productMedia } from "@/lib/product-media";
 import WishlistButton from "@/components/WishlistButton";
 import ReviewsSection from "@/components/ReviewsSection";
+import PriceAlertButton from "@/components/PriceAlertButton";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +50,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div>✓ Secure checkout</div>
           </div>
           <div className="sellerBox"><strong>Seller</strong><div>{product.seller.storeName}</div><small>AkaziConnect marketplace seller</small></div>
-          <div className="productActions"><button className="secondaryButton" onClick={async () => { await fetch("/api/price-alerts", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ productId: product.id }) }); }}>Notify me on price drop</button>
+          <div className="productActions"><PriceAlertButton productId={product.id} />
             {product.stock > 0 ? <AddToCartButton productId={product.id} className="cta">Add to cart</AddToCartButton> : <button className="cta" disabled>Out of stock</button>}
             {product.stock > 0 ? <BuyNowButton productId={product.id} /> : null}
           </div>
