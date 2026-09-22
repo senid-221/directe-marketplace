@@ -567,3 +567,7 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
 .card{transition:transform .18s ease,box-shadow .18s ease}
 .card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,17,17,.08)}
 .badge{letter-spacing:.03em}
+
+
+.quickLinks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 18px}.quickLink{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1px solid #eee;border-radius:12px;background:#fff;font-size:13px;font-weight:700}.quickLink:hover{border-color:#ffd3c2;color:var(--akazi-orange)}.quickLink .arrow{margin-left:auto;font-size:17px}.quickLink>span:first-child{font-size:21px}
+@media(max-width:760px){.quickLinks{grid-template-columns:repeat(2,1fr);gap:8px}.quickLink{padding:12px;font-size:12px}}
