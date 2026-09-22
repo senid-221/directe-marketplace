@@ -12,9 +12,10 @@ export async function GET(request: Request) {
   const products = await prisma.product.findMany({
     where: {
       published: true,
+      seller: { status: "APPROVED" },
       ...(q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { description: { contains: q, mode: "insensitive" } }] } : {}),
       ...(category ? { category: { slug: category } } : {}),
-      ...(seller ? { seller: { id: seller } } : {}),
+      ...(seller ? { seller: { id: seller, status: "APPROVED" } } : {}),
     },
     include: { images: { orderBy: { position: "asc" } }, seller: true, category: true },
     orderBy: { createdAt: "desc" },
