@@ -16,8 +16,9 @@ export async function POST(request: Request) {
   const requestedSellerId = String(body.sellerId || "").trim();
   const amount = Number(body.amount);
 
+  const currentSeller = session.role === "SELLER" ? await prisma.seller.findUnique({ where: { userId: session.userId } }) : null;
   const seller = await prisma.seller.findUnique({
-    where: { id: requestedSellerId || (session.role === "SELLER" ? (await prisma.seller.findUnique({ where: { userId: session.userId } }))?.id : "") },
+    where: { id: requestedSellerId || currentSeller?.id || "" },
     include: { user: true, wallet: true },
   });
 
