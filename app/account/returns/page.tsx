@@ -47,7 +47,6 @@ export default async function ReturnsPage() {
                 ))}
               </div>
               <p><strong>Reason:</strong> {item.reason}</p>
-              {item.refundAmount !== null && <p><strong>Refund:</strong> RWF {Number(item.refundAmount).toLocaleString()}</p>}
             </article>
           ))}
         </div>
