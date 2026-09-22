@@ -43,7 +43,34 @@ export async function POST(request: Request) {
 
   const subtotal = cart.reduce((sum: number, item: (typeof cart)[number]) => sum + Number(item.product.price) * item.quantity, 0);
   const delivery = 3000;
-  const total = subtotal + delivery;
+
+  const couponCode = String(body.couponCode || "").trim().toUpperCase();
+  let discount = 0;
+  let couponId: string | null = null;
+
+  if (couponCode) {
+    const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } });
+    const now = new Date();
+    if (!coupon || !coupon.active || (coupon.startAt && coupon.startAt > now) || (coupon.endAt && coupon.endAt < now)) {
+      return NextResponse.json({ error: "Coupon is invalid or expired." }, { status: 400 });
+    }
+    if (coupon.usageLimit !== null && coupon.usedCount >= coupon.usageLimit) {
+      return NextResponse.json({ error: "Coupon usage limit has been reached." }, { status: 409 });
+    }
+    if (coupon.minOrderAmount !== null && subtotal < Number(coupon.minOrderAmount)) {
+      return NextResponse.json({ error: "Minimum order amount for this coupon has not been reached." }, { status: 400 });
+    }
+    const used = await prisma.couponUsage.count({ where: { couponId: coupon.id, userId: session.userId } });
+    if (used >= coupon.perUserLimit) {
+      return NextResponse.json({ error: "You have already used this coupon." }, { status: 409 });
+    }
+    discount = coupon.type === "PERCENT" ? subtotal * Number(coupon.value) / 100 : Number(coupon.value);
+    if (coupon.maxDiscount !== null) discount = Math.min(discount, Number(coupon.maxDiscount));
+    discount = Math.max(0, Math.min(discount, subtotal));
+    couponId = coupon.id;
+  }
+
+  const total = Math.max(0, subtotal - discount + delivery);
   const txRef = "AKZ-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9).toUpperCase();
   const trackingCode = "AKZ-" + Math.random().toString(36).slice(2, 8).toUpperCase() + Date.now().toString().slice(-5);
 
@@ -68,6 +95,7 @@ export async function POST(request: Request) {
         },
       },
       payment: { create: { txRef, method, amount: total, currency: "RWF", status: "PENDING", provider: "flutterwave" } },
+      ...(couponId ? { couponUsage: { create: { couponId, userId: session.userId, discount } } } : {}),
     },
   });
 
