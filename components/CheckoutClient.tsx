@@ -51,7 +51,7 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
     setBusy(true);
 
     try {
-      const method = payment === "momo" ? "MOBILE_MONEY" : payment === "bank" ? "BANK_TRANSFER" : "CARD";
+      const method = "MOBILE_MONEY";
       const response = await fetch("/api/payments/create", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -79,12 +79,8 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
         return;
       }
 
-      if (!data.paymentUrl) {
-        alert("Payment gateway did not return a checkout link.");
-        return;
-      }
-
-      window.location.href = data.paymentUrl;
+      alert(data.message || "Payment request sent. Approve the MTN Mobile Money prompt on your phone.");
+      router.push("/orders" + "?payment=" + encodeURIComponent(data.orderId || ""));
     } catch {
       alert("Could not connect to the payment service. Please try again.");
     } finally {
@@ -110,12 +106,11 @@ export default function CheckoutClient({ items, subtotal, delivery, total }: Pro
 
         <h2>Payment method</h2>
         <label className="paymentOption"><input type="radio" name="p" value="momo" checked={payment === "momo"} onChange={() => setPayment("momo")} /> MTN Mobile Money</label>
-        <label className="paymentOption"><input type="radio" name="p" value="bank" checked={payment === "bank"} onChange={() => setPayment("bank")} /> Banking</label>
-        <label className="paymentOption"><input type="radio" name="p" value="card" checked={payment === "card"} onChange={() => setPayment("card")} /> Credit / Debit Card</label>
+        <p className="paymentNote">PawaPay: MTN Mobile Money. A payment request will be sent to the phone number above.</p>
 
         <div className="couponRow"><input value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} placeholder="Coupon code" /><button type="button" className="secondaryButton" onClick={applyCoupon}>Apply</button></div>{couponMessage && <p className="paymentNote">{couponMessage}</p>}<p className="paymentNote">Delivery fee is currently RWF {delivery.toLocaleString()}. Payment is completed through the secure payment page.</p>
         <button className="cta" onClick={pay} disabled={busy} style={{marginTop:18,width:"100%"}}>
-          {busy ? "Opening secure payment..." : "Pay securely · RWF " + finalTotal.toLocaleString()}
+          {busy ? "Starting MTN Mobile Money payment..." : "Pay with MTN MoMo · RWF " + finalTotal.toLocaleString()}
         </button>
       </section>
 

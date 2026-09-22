@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { creditSellerWalletsForOrder } from "@/lib/seller-wallet";
 
 export async function verifyAndFinalizePayment(txRef: string, transactionId: string) {
   const secret = process.env.FLW_SECRET_KEY;
@@ -9,7 +10,8 @@ export async function verifyAndFinalizePayment(txRef: string, transactionId: str
   if (!payment) throw new Error("Payment not found.");
 
   if (payment.status === "SUCCESSFUL" && payment.order.status === "PAID") {
-    return { ok: true, orderId: payment.orderId, status: "successful" as const };
+    await creditSellerWalletsForOrder(payment.orderId);
+  return { ok: true, orderId: payment.orderId, status: "successful" as const };
   }
 
   const response = await fetch("https://api.flutterwave.com/v3/transactions/" + encodeURIComponent(transactionId) + "/verify", {
