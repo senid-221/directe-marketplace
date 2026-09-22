@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { creditSellerWalletsForOrder } from "@/lib/seller-wallet";
 
 function normalizeStatus(value: unknown) {
   const status = String(value || "").toUpperCase();
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
           });
         }
       });
+      await creditSellerWalletsForOrder(payment.orderId);
     } else if (status === "FAILED") {
       await prisma.payment.update({
         where: { id: payment.id },
