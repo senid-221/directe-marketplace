@@ -72,6 +72,20 @@ enum DiscountScope {
   PRODUCT
   CATEGORY
 }
+enum WalletEntryType {
+  SALE
+  COMMISSION
+  PAYOUT
+  REFUND
+  ADJUSTMENT
+}
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
 
 model SiteSetting {
   id String @id @default("default")
@@ -122,11 +136,60 @@ model Seller {
   paymentMethod PaymentMethod?
   paymentTxRef String? @unique
   paymentTxnId String?
+  payoutPhone String?
+  payoutProvider String @default("MTN_MOMO_RWA")
+  payoutEnabled Boolean @default(false)
   createdAt DateTime @default(now())
   user User @relation(fields:[userId], references:[id], onDelete:Cascade)
   products Product[]
   promotions Promotion[]
   coupons Coupon[]
+  wallet SellerWallet?
+  payouts SellerPayout[]
+}
+model SellerWallet {
+  id String @id @default(cuid())
+  sellerId String @unique
+  availableBalance Decimal @default(0)
+  pendingBalance Decimal @default(0)
+  totalSales Decimal @default(0)
+  totalPayouts Decimal @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  seller Seller @relation(fields:[sellerId], references:[id], onDelete:Cascade)
+  entries SellerLedgerEntry[]
+}
+model SellerLedgerEntry {
+  id String @id @default(cuid())
+  sellerWalletId String
+  type WalletEntryType
+  amount Decimal
+  orderId String?
+  payoutId String?
+  note String?
+  createdAt DateTime @default(now())
+  sellerWallet SellerWallet @relation(fields:[sellerWalletId], references:[id], onDelete:Cascade)
+  @@index([sellerWalletId, createdAt])
+  @@index([orderId])
+  @@index([payoutId])
+}
+model SellerPayout {
+  id String @id @default(cuid())
+  sellerId String
+  amount Decimal
+  currency String @default("RWF")
+  provider String @default("pawapay")
+  providerPayoutId String @unique
+  providerTransactionId String?
+  status PayoutStatus @default(PENDING)
+  phone String
+  providerStatus String?
+  failureReason String?
+  requestedAt DateTime @default(now())
+  completedAt DateTime?
+  seller Seller @relation(fields:[sellerId], references:[id], onDelete:Cascade)
+  @@index([sellerId, status])
+  @@index([providerStatus])
 }
 model Category {
   id String @id @default(cuid())
@@ -225,7 +288,7 @@ model Payment {
   status PaymentStatus @default(PENDING)
   amount Decimal
   currency String @default("RWF")
-  provider String @default("flutterwave")
+  provider String @default("pawapay")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order Order @relation(fields:[orderId], references:[id], onDelete:Cascade)
