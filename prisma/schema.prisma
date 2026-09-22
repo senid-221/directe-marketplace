@@ -5,16 +5,73 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum UserRole { CUSTOMER SELLER ADMIN }
-enum OrderStatus { PENDING PAID PROCESSING SHIPPED DELIVERED CANCELLED REFUNDED }
-enum DeliveryStatus { PENDING ASSIGNED PICKED_UP IN_TRANSIT DELIVERED FAILED CANCELLED }
-enum SellerStatus { PENDING APPROVED SUSPENDED REJECTED }
-enum PaymentMethod { CARD MOBILE_MONEY BANK_TRANSFER }
-enum PaymentStatus { PENDING SUCCESSFUL FAILED CANCELLED REFUNDED }
-enum PromotionType { PERCENT FIXED FLASH_SALE }
-enum NotificationType { ORDER PAYMENT DELIVERY PROMOTION PRICE_DROP SYSTEM }
-enum ReturnStatus { REQUESTED APPROVED REJECTED RECEIVED REFUNDED CANCELLED }
-enum DiscountScope { ORDER PRODUCT CATEGORY }
+enum UserRole {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+enum SellerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+enum PaymentMethod {
+  CARD
+  MOBILE_MONEY
+  BANK_TRANSFER
+}
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+enum PromotionType {
+  PERCENT
+  FIXED
+  FLASH_SALE
+}
+enum NotificationType {
+  ORDER
+  PAYMENT
+  DELIVERY
+  PROMOTION
+  PRICE_DROP
+  SYSTEM
+}
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  RECEIVED
+  REFUNDED
+  CANCELLED
+}
+enum DiscountScope {
+  ORDER
+  PRODUCT
+  CATEGORY
+}
 
 model SiteSetting {
   id String @id @default("default")
