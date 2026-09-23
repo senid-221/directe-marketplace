@@ -13,7 +13,7 @@ async function getConfig() {
   const apiUser = process.env.MTN_MOMO_API_USER;
   const apiKey = process.env.MTN_MOMO_API_KEY;
   const subscriptionKey = process.env.MTN_MOMO_COLLECTION_SUBSCRIPTION_KEY;
-  const baseUrl = (process.env.MTN_MOMO_BASE_URL || "https://sandbox.momodeveloper.mtn.com").replace(//$/, "");
+  const baseUrl = (process.env.MTN_MOMO_BASE_URL || "https://sandbox.momodeveloper.mtn.com").replace(/\/$/, "");
   const targetEnvironment = process.env.MTN_MOMO_TARGET_ENVIRONMENT || "sandbox";
   if (!apiUser || !apiKey || !subscriptionKey) throw new Error("MTN_MOMO_NOT_CONFIGURED");
   return { apiUser, apiKey, subscriptionKey, baseUrl, targetEnvironment };
