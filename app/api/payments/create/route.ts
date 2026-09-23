@@ -99,6 +99,7 @@ export async function POST(request: Request) {
   }
 
   const total = Math.max(0, subtotal - discount + delivery);
+  if (!Number.isFinite(total) || total <= 0) return NextResponse.json({ error: "Invalid checkout total." }, { status: 400 });
   const depositId = crypto.randomUUID();
   const trackingCode = "DIR-" + Math.random().toString(36).slice(2, 8).toUpperCase() + Date.now().toString().slice(-5);
 
