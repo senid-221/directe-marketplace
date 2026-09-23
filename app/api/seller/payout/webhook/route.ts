@@ -1,51 +1,65 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
 function normalizeStatus(value: unknown) {
   const status = String(value || "").toUpperCase();
-  if (status === "COMPLETED" || status === "SUCCESSFUL") return "COMPLETED" as const;
-  if (status === "FAILED") return "FAILED" as const;
-  if (status === "CANCELLED") return "CANCELLED" as const;
+  if (status === "SUCCESSFUL" || status === "SUCCESS" || status === "COMPLETED") return "COMPLETED" as const;
+  if (status === "FAILED" || status === "CANCELLED" || status === "REJECTED") return "FAILED" as const;
   return "PROCESSING" as const;
 }
 
-async function verifyPayout(payoutId: string) {
-  const token = process.env.PAWAPAY_API_TOKEN;
-  const baseUrl = (process.env.PAWAPAY_API_URL || "https://api.sandbox.pawapay.io").replace(/\/$/, "");
-  if (!token) throw new Error("PAWAPAY_API_TOKEN is not configured.");
-  const response = await fetch(baseUrl + "/v2/payouts/" + encodeURIComponent(payoutId), {
-    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+async function getConfig() {
+  const apiUser = process.env.MTN_MOMO_API_USER;
+  const apiKey = process.env.MTN_MOMO_API_KEY;
+  const subscriptionKey = process.env.MTN_MOMO_DISBURSEMENT_SUBSCRIPTION_KEY;
+  const baseUrl = (process.env.MTN_MOMO_BASE_URL || "https://sandbox.momodeveloper.mtn.com").replace(//$/, "");
+  const targetEnvironment = process.env.MTN_MOMO_TARGET_ENVIRONMENT || "sandbox";
+  if (!apiUser || !apiKey || !subscriptionKey) throw new Error("MTN_MOMO_NOT_CONFIGURED");
+  return { apiUser, apiKey, subscriptionKey, baseUrl, targetEnvironment };
+}
+
+async function getAccessToken(config: Awaited<ReturnType<typeof getConfig>>) {
+  const basic = Buffer.from(config.apiUser + ":" + config.apiKey).toString("base64");
+  const response = await fetch(config.baseUrl + "/disbursement/token/", {
+    method: "POST",
+    headers: { Authorization: "Basic " + basic, "Ocp-Apim-Subscription-Key": config.subscriptionKey },
     cache: "no-store",
   });
-  if (!response.ok) throw new Error("Could not verify PawaPay payout.");
-  return response.json();
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data?.access_token) throw new Error("Could not get MTN MoMo disbursement access token.");
+  return String(data.access_token);
+}
+
+async function getPayoutStatus(referenceId: string) {
+  const config = await getConfig();
+  const token = await getAccessToken(config);
+  const response = await fetch(config.baseUrl + "/disbursement/v1_0/transfer/" + encodeURIComponent(referenceId), {
+    headers: {
+      Authorization: "Bearer " + token,
+      "X-Target-Environment": config.targetEnvironment,
+      "Ocp-Apim-Subscription-Key": config.subscriptionKey,
+    },
+    cache: "no-store",
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error("Could not verify MTN MoMo payout.");
+  return data;
 }
 
 export async function POST(request: Request) {
-  const raw = await request.text();
-  const callbackSecret = process.env.PAWAPAY_CALLBACK_SECRET;
-  if (callbackSecret) {
-    const provided = request.headers.get("x-directe-callback-secret");
-    if (!provided || !crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(callbackSecret))) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-  }
-
   try {
-    const payload = JSON.parse(raw);
-    const payoutId = String(payload?.payoutId || payload?.data?.payoutId || "");
-    if (!payoutId) return NextResponse.json({ received: true });
+    const payload = await request.json().catch(() => ({}));
+    const referenceId = String(payload?.referenceId || payload?.data?.referenceId || payload?.financialTransactionId || "");
+    if (!referenceId) return NextResponse.json({ received: true });
 
     const payout = await prisma.sellerPayout.findUnique({
-      where: { providerPayoutId: payoutId },
+      where: { providerPayoutId: referenceId },
       include: { seller: { include: { wallet: true } } },
     });
     if (!payout) return NextResponse.json({ received: true });
 
-    const result = await verifyPayout(payoutId);
-    const data = result?.data || result;
-    const status = normalizeStatus(data?.status || payload?.status);
+    const result = await getPayoutStatus(referenceId);
+    const status = normalizeStatus(result?.status || payload?.status);
 
     if (status === "COMPLETED") {
       await prisma.$transaction(async (db) => {
@@ -55,8 +69,8 @@ export async function POST(request: Request) {
           where: { id: payout.id },
           data: {
             status: "COMPLETED",
-            providerStatus: String(data?.status || "COMPLETED"),
-            providerTransactionId: String(data?.providerTransactionId || data?.transactionId || payoutId),
+            providerStatus: String(result?.status || "SUCCESSFUL"),
+            providerTransactionId: String(result?.financialTransactionId || referenceId),
             completedAt: new Date(),
           },
         });
@@ -70,15 +84,17 @@ export async function POST(request: Request) {
           });
         }
       });
-    } else if (status === "FAILED" || status === "CANCELLED") {
+    } else if (status === "FAILED") {
       await prisma.$transaction(async (db) => {
+        const fresh = await db.sellerPayout.findUnique({ where: { id: payout.id } });
+        if (!fresh || ["COMPLETED", "FAILED", "CANCELLED"].includes(fresh.status)) return;
         await db.sellerPayout.update({
           where: { id: payout.id },
           data: {
-            status,
-            providerStatus: String(data?.status || status),
-            providerTransactionId: String(data?.providerTransactionId || data?.transactionId || payoutId),
-            failureReason: String(data?.failureReason || data?.message || ""),
+            status: "FAILED",
+            providerStatus: String(result?.status || "FAILED"),
+            providerTransactionId: String(result?.financialTransactionId || referenceId),
+            failureReason: String(result?.reason || result?.message || payload?.reason || "MTN MoMo payout failed."),
           },
         });
         if (payout.seller.wallet) {
@@ -93,9 +109,9 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true, status });
   } catch (error) {
-    console.error("DIRECTE PawaPay payout callback failed:", error);
-    return NextResponse.json({ received: true });
+    console.error("DIRECTE MTN MoMo payout callback failed:", error);
+    return NextResponse.json({ received: true }, { status: 200 });
   }
 }
