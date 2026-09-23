@@ -179,7 +179,7 @@ model SellerPayout {
   sellerId String
   amount Decimal
   currency String @default("RWF")
-  provider String @default("pawapay")
+  provider String @default("mtn_momo")
   providerPayoutId String @unique
   providerTransactionId String?
   status PayoutStatus @default(PENDING)
