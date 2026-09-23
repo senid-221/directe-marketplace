@@ -53,16 +53,18 @@ export async function POST(request: Request) {
   for (const item of cart) {
     const variantCount = await prisma.productVariant.count({ where: { productId: item.productId } });
     const stock = item.variant ? item.variant.stock : item.product.stock;
-    if (item.product.seller.status !== "APPROVED" || !item.product.published || stock < item.quantity || (variantCount > 0 && !item.variant)) {
+    if (item.product.seller.status !== "APPROVED") {
+      return NextResponse.json({ error: "A seller is no longer approved for this product." }, { status: 409 });
+    }
+    if (!item.product.published) {
+      return NextResponse.json({ error: "A product is no longer available." }, { status: 409 });
+    }
+    if (variantCount > 0 && !item.variant) {
+      return NextResponse.json({ error: "Select a product option before checkout." }, { status: 409 });
+    }
+    if (stock < item.quantity) {
       return NextResponse.json({
-        error: item.product.seller.status !== "APPROVED"
-          ? "A seller is no longer approved for this product."
-: item.variant && item.variant.stock < item.quantity
-            ? "A selected product option is out of stock."
-            : item.product.stock < item.quantity
-            ? "Some products are out of stock."
-            : "Select a product option before checkout."
-            : "A product is no longer available.",
+        error: item.variant ? "A selected product option is out of stock." : "Some products are out of stock.",
       }, { status: 409 });
     }
   }
