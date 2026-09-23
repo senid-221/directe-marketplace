@@ -82,7 +82,7 @@ function PayoutForm({ available, payoutEnabled, payoutPhone, payoutProvider }: {
 
 import { useState } from "react";
 
-function PayoutButton({ available }: { available: number }) {
+function PayoutButton({ available, payoutProvider, payoutPhone }: { available:number; payoutProvider:string; payoutPhone:string }) {
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -116,7 +116,11 @@ function PayoutButton({ available }: { available: number }) {
   return <div>
     <label>Amount (RWF)<input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
     <div className="walletFormInfo"><span>Available</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
-    <button className="cta" type="button" disabled={busy || !available} onClick={requestPayout}>{busy ? "Submitting…" : "Request payout"}</button>
+    <label>Amount (RWF)<input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
+    <div className="walletFormInfo"><span>Available</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
+    <div className="walletFormInfo"><span>Provider</span><strong>{payoutProvider}</strong></div>
+    <div className="walletFormInfo"><span>Phone</span><strong>{payoutPhone || "Not configured"}</strong></div>
+    <button className="cta" type="button" disabled={busy || !available || !payoutPhone} onClick={requestPayout}>{busy ? "Submitting…" : "Request payout"}</button>
     {message && <p className="paymentNote">{message}</p>}
   </div>;
 }
