@@ -43,7 +43,7 @@ export default async function SellerPage() {
     <div className="sellerQuickLinks">
       <a href="/seller/products"><span className="material-symbols-outlined">inventory_2</span><strong>Manage products</strong><small>Add, edit and publish products</small></a>
       <a href="/seller/orders"><span className="material-symbols-outlined">shopping_bag</span><strong>Manage orders</strong><small>Process customer orders</small></a><a href="/seller/coupons"><span className="material-symbols-outlined">confirmation_number</span><strong>Coupons</strong><small>Create discount codes</small></a>
-      <a href="/seller/inventory"><span className="material-symbols-outlined">warehouse</span><strong>Inventory</strong><small>Update stock quickly</small></a>
+      <a href="/seller/inventory"><span className="material-symbols-outlined">warehouse</span><strong>Inventory</strong><small>Update stock quickly</small></a><a href="/seller/wallet"><span className="material-symbols-outlined">account_balance_wallet</span><strong>Wallet</strong><small>View balance and request payouts</small></a>
     </div>
 
     <div className="panel">
@@ -57,6 +57,6 @@ export default async function SellerPage() {
 }
 
 function SellerSidebar({ active }: { active: string }) {
-  const links = [["Dashboard","/seller"],["Products","/seller/products"],["Orders","/seller/orders"],["Inventory","/seller/inventory"],["Store settings","/seller/settings"]];
+  const links = [["Dashboard","/seller"],["Products","/seller/products"],["Orders","/seller/orders"],["Inventory","/seller/inventory"],["Wallet","/seller/wallet"],["Store settings","/seller/settings"]];
   return <aside className="portalSide"><div className="brand"><span className="brandMark">A</span>AkaziConnect</div><h3>Seller Center</h3>{links.map(([label,href])=><a key={label} href={href} className={active===label?"portalNavActive":""}>{label}</a>)}</aside>;
 }
