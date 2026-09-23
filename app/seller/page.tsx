@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import SellerWalletClient from "@/components/SellerWalletClient";
 
 type SellerProductStock = {
   stock: number;
@@ -25,6 +26,14 @@ export default async function SellerPage() {
   ]);
 
   const revenue = sellerItems.reduce((sum: number, item: (typeof sellerItems)[number]) => sum + Number(item.unitPrice) * item.quantity, 0);
+  const wallet = seller.wallet ? {
+    availableBalance: Number(seller.wallet.availableBalance),
+    pendingBalance: Number(seller.wallet.pendingBalance),
+    totalSales: Number(seller.wallet.totalSales),
+    totalPayouts: Number(seller.wallet.totalPayouts),
+  } : { availableBalance: 0, pendingBalance: 0, totalSales: 0, totalPayouts: 0 };
+  const payouts = await prisma.sellerPayout.findMany({ where: { sellerId: seller.id }, orderBy: { requestedAt: "desc" }, take: 10, select: { id: true, amount: true, status: true, phone: true, requestedAt: true } });
+
   const sellerProducts: SellerProductStock[] = products;
   const lowStock = sellerProducts.filter((product: SellerProductStock) => product.stock <= 5).length;
 
@@ -39,6 +48,8 @@ export default async function SellerPage() {
       <div className="stat"><span>Revenue</span><strong>RWF {Math.round(revenue).toLocaleString()}</strong></div>
       <div className="stat"><span>Low stock</span><strong>{lowStock}</strong></div>
     </div>
+
+    <SellerWalletClient wallet={wallet} payouts={payouts.map((p) => ({...p, amount:Number(p.amount), requestedAt:p.requestedAt.toISOString()}))}/>
 
     <div className="sellerQuickLinks">
       <a href="/seller/products"><span className="material-symbols-outlined">inventory_2</span><strong>Manage products</strong><small>Add, edit and publish products</small></a>
