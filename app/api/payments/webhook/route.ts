@@ -81,7 +81,10 @@ export async function POST(request: Request) {
         await db.cartItem.deleteMany({
           where: {
             userId: payment.order.userId,
-            productId: { in: payment.order.items.map((item) => item.productId) },
+            OR: payment.order.items.map((item) => ({
+              productId: item.productId,
+              variantId: item.variantId ?? null,
+            })),
           },
         });
         if (payment.order.couponUsage) {
