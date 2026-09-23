@@ -1,52 +1,76 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { creditSellerWalletsForOrder } from "@/lib/seller-wallet";
 
 function normalizeStatus(value: unknown) {
   const status = String(value || "").toUpperCase();
-  if (status === "COMPLETED" || status === "SUCCESSFUL") return "SUCCESSFUL" as const;
-  if (status === "FAILED" || status === "CANCELLED") return "FAILED" as const;
+  if (["SUCCESSFUL", "SUCCESS", "COMPLETED"].includes(status)) return "SUCCESSFUL" as const;
+  if (["FAILED", "CANCELLED", "REJECTED"].includes(status)) return "FAILED" as const;
   return "PENDING" as const;
 }
 
-async function verifyDeposit(depositId: string) {
-  const token = process.env.PAWAPAY_API_TOKEN;
-  const baseUrl = (process.env.PAWAPAY_API_URL || "https://api.sandbox.pawapay.io").replace(/\/$/, "");
-  if (!token) throw new Error("PAWAPAY_API_TOKEN is not configured.");
-  const response = await fetch(baseUrl + "/v2/deposits/" + encodeURIComponent(depositId), {
-    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+async function getConfig() {
+  const apiUser = process.env.MTN_MOMO_API_USER;
+  const apiKey = process.env.MTN_MOMO_API_KEY;
+  const subscriptionKey = process.env.MTN_MOMO_COLLECTION_SUBSCRIPTION_KEY;
+  const baseUrl = (process.env.MTN_MOMO_BASE_URL || "https://sandbox.momodeveloper.mtn.com").replace(/\/$/, "");
+  const targetEnvironment = process.env.MTN_MOMO_TARGET_ENVIRONMENT || "sandbox";
+  if (!apiUser || !apiKey || !subscriptionKey) throw new Error("MTN_MOMO_NOT_CONFIGURED");
+  return { apiUser, apiKey, subscriptionKey, baseUrl, targetEnvironment };
+}
+
+async function getAccessToken(config: Awaited<ReturnType<typeof getConfig>>) {
+  const basic = Buffer.from(config.apiUser + ":" + config.apiKey).toString("base64");
+  const response = await fetch(config.baseUrl + "/collection/token/", {
+    method: "POST",
+    headers: {
+      Authorization: "Basic " + basic,
+      "Ocp-Apim-Subscription-Key": config.subscriptionKey,
+    },
     cache: "no-store",
   });
-  if (!response.ok) throw new Error("Could not verify PawaPay deposit.");
-  return response.json();
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data?.access_token) throw new Error("Could not get MTN MoMo access token.");
+  return String(data.access_token);
+}
+
+async function getPaymentStatus(referenceId: string) {
+  const config = await getConfig();
+  const token = await getAccessToken(config);
+  const response = await fetch(config.baseUrl + "/collection/v1_0/requesttopay/" + encodeURIComponent(referenceId), {
+    headers: {
+      Authorization: "Bearer " + token,
+      "X-Target-Environment": config.targetEnvironment,
+      "Ocp-Apim-Subscription-Key": config.subscriptionKey,
+    },
+    cache: "no-store",
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error("Could not verify MTN MoMo payment.");
+  return data;
 }
 
 export async function POST(request: Request) {
-  const raw = await request.text();
-
-  const callbackSecret = process.env.PAWAPAY_CALLBACK_SECRET;
-  if (callbackSecret) {
-    const provided = request.headers.get("x-directe-callback-secret");
-    if (!provided || !crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(callbackSecret))) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-  }
-
   try {
-    const payload = JSON.parse(raw);
-    const depositId = String(payload?.depositId || payload?.data?.depositId || "");
-    if (!depositId) return NextResponse.json({ received: true });
+    const payload = await request.json().catch(() => ({}));
+    const referenceId = String(
+      payload?.referenceId ||
+      payload?.externalId ||
+      payload?.data?.referenceId ||
+      payload?.data?.externalId ||
+      payload?.transactionReferenceId ||
+      ""
+    );
+    if (!referenceId) return NextResponse.json({ received: true });
 
     const payment = await prisma.payment.findUnique({
-      where: { txRef: depositId },
+      where: { txRef: referenceId },
       include: { order: { include: { items: true, couponUsage: true } } },
     });
     if (!payment) return NextResponse.json({ received: true });
 
-    const result = await verifyDeposit(depositId);
-    const data = result?.data || result;
-    const status = normalizeStatus(data?.status || payload?.status);
+    const result = await getPaymentStatus(referenceId);
+    const status = normalizeStatus(result?.status || payload?.status);
 
     if (status === "SUCCESSFUL") {
       await prisma.$transaction(async (db) => {
@@ -73,8 +97,8 @@ export async function POST(request: Request) {
           where: { id: payment.id },
           data: {
             status: "SUCCESSFUL",
-            provider: "pawapay",
-            transactionId: String(data?.providerTransactionId || data?.transactionId || depositId),
+            provider: "mtn_momo",
+            transactionId: String(result?.financialTransactionId || result?.financialTransactionId || referenceId),
           },
         });
         await db.order.update({ where: { id: payment.orderId }, data: { status: "PAID" } });
@@ -100,17 +124,17 @@ export async function POST(request: Request) {
         where: { id: payment.id },
         data: {
           status: "FAILED",
-          provider: "pawapay",
-          transactionId: String(data?.providerTransactionId || data?.transactionId || depositId),
+          provider: "mtn_momo",
+          transactionId: String(result?.financialTransactionId || referenceId),
         },
       });
       await prisma.order.update({ where: { id: payment.orderId }, data: { status: "CANCELLED" } });
       await prisma.delivery.update({ where: { orderId: payment.orderId }, data: { status: "CANCELLED" } });
     }
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true, status });
   } catch (error) {
-    console.error("DIRECTE PawaPay payment callback failed:", error);
-    return NextResponse.json({ received: true });
+    console.error("DIRECTE MTN MoMo payment callback failed:", error);
+    return NextResponse.json({ received: true }, { status: 200 });
   }
 }
