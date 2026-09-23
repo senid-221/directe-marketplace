@@ -23,7 +23,7 @@ export default async function HomePage() {
   const logoUrl = await getSiteLogo();
   const businessSetting = await prisma.siteSetting.findUnique({ where: { id: "default" } });
   const business = (businessSetting?.businessProfile || {}) as { displayName?: string; description?: string; phone?: string; email?: string; website?: string };
-  const businessName = business.displayName || "{businessName}";
+  const businessName = business.displayName || "AkaziConnect";
   let products: any[] = [];
   try {
     products = await prisma.product.findMany({
@@ -33,7 +33,7 @@ export default async function HomePage() {
       take: 20,
     });
   } catch (error) {
-    console.error("{businessName} homepage products load failed:", error);
+    console.error("AkaziConnect homepage products load failed:", error);
   }
 
   const deals = products.filter((p) => p.oldPrice && Number(p.oldPrice) > Number(p.price)).slice(0, 5);
@@ -42,7 +42,7 @@ export default async function HomePage() {
     <div className="shell">
       <header className="header">
         <div className="headerInner">
-          <a href="/" className="brand"><img src={logoUrl} alt="{businessName}" className="brandLogo" /></a>
+          <a href="/" className="brand"><img src={logoUrl} alt={businessName} className="brandLogo" /></a>
 
           <form action="/search" method="get" className="search" aria-label="Search products">
             <span className="material-symbols-outlined">search</span>
@@ -58,9 +58,9 @@ export default async function HomePage() {
         </div>
         <nav className="nav">
           <div className="navInner">
-            <a href="/categories">All Categories</a><a href="/deals">Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
+            <a href="/categories"><span className="material-symbols-outlined inlineIcon">category</span> All Categories</a><a href="/deals"><span className="material-symbols-outlined inlineIcon">local_fire_department</span> Flash Deals</a><a href="/new-arrivals">New Arrivals</a>
             <a href="/best-sellers">Best Sellers</a><a href="/category/fashion">Fashion</a><a href="/category/electronics">Electronics</a>
-            <a href="/category/home">Home & Living</a><Link href="/seller/apply">Become a Seller</Link>
+            <a href="/category/home">Home & Living</a><Link href="/seller/apply" className="sellerNavLink"><span className="material-symbols-outlined inlineIcon">storefront</span> Become a Seller</Link>
           </div>
         </nav>
       </header>
@@ -75,9 +75,11 @@ export default async function HomePage() {
           </div>
           <div className="heroSide">
             <div className="promo"><div style={{fontSize:13,fontWeight:800}}><span className="material-symbols-outlined inlineIcon">local_fire_department</span> FLASH DEALS</div><div style={{fontSize:27,fontWeight:800,marginTop:8}}>Up to 50% off</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Limited-time marketplace offers</div></div>
-            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--{businessName}-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on {businessName}</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
+            <div className="promo"><div style={{fontSize:13,fontWeight:800,color:"var(--akazi-orange)"}}>RWANDA SELLERS</div><div style={{fontSize:23,fontWeight:800,marginTop:8}}>Sell on {businessName}</div><div style={{opacity:.75,fontSize:13,marginTop:8}}>Build your store and reach customers nationwide.</div></div>
           </div>
         </section>
+
+        <section className="quickLinks"><Link href="/new-arrivals" className="quickLink"><span className="material-symbols-outlined">new_releases</span><span>New arrivals</span><span className="material-symbols-outlined arrow">arrow_forward</span></Link><Link href="/best-sellers" className="quickLink"><span className="material-symbols-outlined">trending_up</span><span>Best sellers</span><span className="material-symbols-outlined arrow">arrow_forward</span></Link><Link href="/deals" className="quickLink"><span className="material-symbols-outlined">local_offer</span><span>Today's deals</span><span className="material-symbols-outlined arrow">arrow_forward</span></Link><Link href="/seller/apply" className="quickLink"><span className="material-symbols-outlined">storefront</span><span>Sell on AkaziConnect</span><span className="material-symbols-outlined arrow">arrow_forward</span></Link></section>
 
         <section>
           <div className="sectionHeader"><h2>Shop by category</h2><a href="/categories">View all</a></div>

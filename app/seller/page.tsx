@@ -42,7 +42,7 @@ export default async function SellerPage() {
 
     <div className="sellerQuickLinks">
       <a href="/seller/products"><span className="material-symbols-outlined">inventory_2</span><strong>Manage products</strong><small>Add, edit and publish products</small></a>
-      <a href="/seller/orders"><span className="material-symbols-outlined">shopping_bag</span><strong>Manage orders</strong><small>Process customer orders</small></a>
+      <a href="/seller/orders"><span className="material-symbols-outlined">shopping_bag</span><strong>Manage orders</strong><small>Process customer orders</small></a><a href="/seller/coupons"><span className="material-symbols-outlined">confirmation_number</span><strong>Coupons</strong><small>Create discount codes</small></a>
       <a href="/seller/inventory"><span className="material-symbols-outlined">warehouse</span><strong>Inventory</strong><small>Update stock quickly</small></a>
     </div>
 

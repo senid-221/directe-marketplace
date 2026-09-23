@@ -552,3 +552,29 @@ th{font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.04em;}
   .productActions .cta,.productActions .secondaryButton{padding:11px 8px;font-size:12px;}
   .cartItem .cartPrice{font-size:13px;}
 }
+
+
+/* Marketplace navigation, filters and notifications */
+.navInner a{display:inline-flex;align-items:center;gap:5px}
+.inlineIcon{font-size:17px;vertical-align:-3px}
+.sellerNavLink{color:var(--akazi-orange);font-weight:800}
+.categoryFilters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.categoryFilters input,.categoryFilters select{border:1px solid var(--akazi-border);border-radius:9px;padding:9px 11px;background:#fff;font:inherit}
+.quickLinks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 18px}
+.quickLink{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1px solid #eee;border-radius:12px;background:#fff;font-size:13px;font-weight:700;text-decoration:none}
+.quickLink:hover{border-color:#ffd3c2;color:var(--akazi-orange)}
+.quickLink .arrow{margin-left:auto;font-size:17px}
+.quickLink>span:first-child{font-size:21px}
+.notificationPage{max-width:1100px;margin:0 auto;padding:34px 20px 70px}
+.notificationList{display:grid;gap:10px}
+.notificationItem{display:grid;grid-template-columns:44px 1fr;gap:12px;border:1px solid #e9e9e9;border-radius:14px;padding:14px;background:#fff}
+.notificationItem.unread{border-color:#ffd0bf;background:#fffaf7}
+.notificationIcon{width:44px;height:44px;border-radius:12px;background:#f7f7f7;display:grid;place-items:center}
+.notificationIcon .material-symbols-outlined{font-size:21px;color:var(--akazi-orange)}
+.notificationTop{display:flex;justify-content:space-between;gap:15px;align-items:start}
+.notificationTop time{font-size:11px;color:#888}
+.notificationBody p{margin:7px 0;color:#666;line-height:1.5;font-size:13px}
+.notificationActions{display:flex;gap:8px;flex-wrap:wrap}
+.notificationActions .secondaryButton{padding:8px 11px;font-size:12px}
+@media(max-width:760px){.quickLinks{grid-template-columns:repeat(2,1fr);gap:8px}.quickLink{padding:12px;font-size:12px}.categoryFilters{width:100%}.categoryFilters input,.categoryFilters select{min-width:0;flex:1}}
+@media(max-width:600px){.notificationTop{display:grid;gap:4px}}
