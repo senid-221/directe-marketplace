@@ -5,79 +5,17 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum UserRole {
-  CUSTOMER
-  SELLER
-  ADMIN
-}
-enum OrderStatus {
-  PENDING
-  PAID
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  REFUNDED
-}
-enum DeliveryStatus {
-  PENDING
-  ASSIGNED
-  PICKED_UP
-  IN_TRANSIT
-  DELIVERED
-  FAILED
-  CANCELLED
-}
-enum SellerStatus {
-  PENDING
-  APPROVED
-  SUSPENDED
-  REJECTED
-}
-enum PaymentMethod {
-  CARD
-  MOBILE_MONEY
-  BANK_TRANSFER
-}
-enum PaymentStatus {
-  PENDING
-  SUCCESSFUL
-  FAILED
-  CANCELLED
-  REFUNDED
-}
-enum PromotionType {
-  PERCENT
-  FIXED
-  FLASH_SALE
-}
-enum NotificationType {
-  ORDER
-  PAYMENT
-  DELIVERY
-  PROMOTION
-  PRICE_DROP
-  SYSTEM
-}
-enum ReturnStatus {
-  REQUESTED
-  APPROVED
-  REJECTED
-  RECEIVED
-  REFUNDED
-  CANCELLED
-}
-enum DiscountScope {
-  ORDER
-  PRODUCT
-  CATEGORY
-}
-
-model SiteSetting {
-  id String @id @default("default")
-  logoUrl String?
-  updatedAt DateTime @updatedAt
-}
+enum UserRole { CUSTOMER SELLER ADMIN }
+enum OrderStatus { PENDING PAID PROCESSING SHIPPED DELIVERED CANCELLED REFUNDED }
+enum DeliveryStatus { PENDING ASSIGNED PICKED_UP IN_TRANSIT DELIVERED FAILED CANCELLED }
+enum SellerStatus { PENDING APPROVED SUSPENDED REJECTED }
+enum PaymentMethod { CARD MOBILE_MONEY BANK_TRANSFER }
+enum PaymentStatus { PENDING SUCCESSFUL FAILED CANCELLED REFUNDED }
+enum PromotionType { PERCENT FIXED FLASH_SALE }
+enum NotificationType { ORDER PAYMENT DELIVERY PROMOTION PRICE_DROP SYSTEM }
+enum ReturnStatus { REQUESTED APPROVED REJECTED RECEIVED REFUNDED CANCELLED }
+enum DiscountScope { ORDER PRODUCT CATEGORY }
+model SiteSetting { id String @id @default("default") logoUrl String? updatedAt DateTime @updatedAt }
 model User {
   id String @id @default(cuid())
   name String?
@@ -181,16 +119,21 @@ model ProductVariant {
   sku String? @unique
   createdAt DateTime @default(now())
   product Product @relation(fields:[productId], references:[id], onDelete:Cascade)
+  cartItems CartItem[]
+  orderItems OrderItem[]
   @@index([productId])
 }
 model CartItem {
   id String @id @default(cuid())
   userId String
   productId String
+  variantId String?
   quantity Int @default(1)
   user User @relation(fields:[userId], references:[id], onDelete:Cascade)
   product Product @relation(fields:[productId], references:[id])
-  @@unique([userId, productId])
+  variant ProductVariant? @relation(fields:[variantId], references:[id], onDelete:SetNull)
+  @@unique([userId, productId, variantId])
+  @@index([userId])
 }
 model Order {
   id String @id @default(cuid())
@@ -210,11 +153,14 @@ model OrderItem {
   id String @id @default(cuid())
   orderId String
   productId String
+  variantId String?
   sellerId String
   quantity Int
   unitPrice Decimal
   order Order @relation(fields:[orderId], references:[id], onDelete:Cascade)
   product Product @relation(fields:[productId], references:[id])
+  variant ProductVariant? @relation(fields:[variantId], references:[id], onDelete:SetNull)
+  @@index([variantId])
 }
 model Payment {
   id String @id @default(cuid())
@@ -375,4 +321,5 @@ model ReturnRequestItem {
   quantity Int
   returnRequest ReturnRequest @relation(fields:[returnRequestId], references:[id], onDelete:Cascade)
   product Product @relation(fields:[productId], references:[id], onDelete:Restrict)
+  @@index([returnRequestId])
 }
