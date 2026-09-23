@@ -11,7 +11,7 @@ export default async function SellerPage() {
   const session = await requireAuth(["SELLER"]).catch(() => null);
   if (!session) redirect("/login?next=/seller");
 
-  const seller = await prisma.seller.findUnique({ where: { userId: session.userId } });
+  const seller = await prisma.seller.findUnique({ where: { userId: session.userId }, include: { wallet: true } });
   if (!seller || seller.status !== "APPROVED") redirect("/seller/apply");
 
   const [products, orders, recentOrders, sellerItems] = await Promise.all([
