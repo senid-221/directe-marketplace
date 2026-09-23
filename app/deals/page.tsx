@@ -45,7 +45,7 @@ export default async function DealsPage() {
 
   return (
     <main className="container">
-      <Link href="/" style={{color:"var(--akaziconnect-orange)",fontWeight:700}}>← AkaziConnect</Link>
+      <Link href="/" style={{color:"var(--akazi-orange)",fontWeight:700}}>← AkaziConnect</Link>
       <div className="sectionHeader"><h1>Flash Deals</h1></div>
       <div className="products">
         {products.map(({ product, promotion }) => (
@@ -57,7 +57,7 @@ export default async function DealsPage() {
               </div>
             </Link>
             <div className="cardBody">
-              <div className="title">{product.name}</div>
+              <Link href={"/product/"+product.slug} className="title">{product.name}</Link>
               <div className="rating">★ {Number(product.rating).toFixed(1)} · {product.seller.storeName}</div>
               <div className="price">
                 RWF {Number(product.price).toLocaleString()}
