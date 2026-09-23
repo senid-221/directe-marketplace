@@ -39,7 +39,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       include: {
         children: true,
         products: {
-          where: { published: true, seller: { status: "APPROVED" } },
+          where: { published: true, seller: { status: "APPROVED" }, ...(min > 0 || max > 0 ? { price: { ...(min > 0 ? { gte: min } : {}), ...(max > 0 ? { lte: max } : {}) } } : {}) },
           include: { images: { orderBy: { position: "asc" } }, seller: true },
           orderBy: sort === "price_asc" ? { price: "asc" } : sort === "price_desc" ? { price: "desc" } : { createdAt: "desc" },
           take: 40,
