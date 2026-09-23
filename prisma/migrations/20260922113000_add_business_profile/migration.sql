@@ -1,0 +1,1 @@
+ALTER TABLE "SiteSetting" ADD COLUMN "businessProfile" JSONB;
