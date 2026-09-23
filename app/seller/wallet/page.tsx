@@ -70,15 +70,13 @@ function PayoutForm({ available, payoutEnabled, payoutPhone, payoutProvider }: {
       <span className="material-symbols-outlined">lock</span>
       <div><strong>Payouts are not enabled</strong><p>Contact the marketplace administrator after your payout details are ready.</p></div>
     </div> : <form className="walletForm">
-      <label>Amount (RWF)<input id="payoutAmount" name="amount" type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
-      <div className="walletFormInfo"><span>Available</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
-      <div className="walletFormInfo"><span>Provider</span><strong>{payoutProvider}</strong></div>
-      <div className="walletFormInfo"><span>Phone</span><strong>{payoutPhone || "Not configured"}</strong></div>
-      <PayoutButton available={available} />
+      <PayoutButton available={available} payoutProvider={payoutProvider} payoutPhone={payoutPhone} />
       <p className="paymentNote">Payout requests use the configured PawaPay account.</p>
     </form>}
   </div>;
 }
+
+
 
 "use client";
 
