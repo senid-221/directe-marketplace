@@ -54,11 +54,19 @@ export async function POST(request: Request) {
         if (fresh?.status === "SUCCESSFUL") return;
 
         for (const item of payment.order.items) {
-          const changed = await db.product.updateMany({
-            where: { id: item.productId, published: true, stock: { gte: item.quantity } },
-            data: { stock: { decrement: item.quantity } },
-          });
-          if (changed.count !== 1) throw new Error("One or more products are no longer available.");
+          if (item.variantId) {
+            const changed = await db.productVariant.updateMany({
+              where: { id: item.variantId, productId: item.productId, stock: { gte: item.quantity } },
+              data: { stock: { decrement: item.quantity } },
+            });
+            if (changed.count !== 1) throw new Error("One or more selected product options are no longer available.");
+          } else {
+            const changed = await db.product.updateMany({
+              where: { id: item.productId, published: true, stock: { gte: item.quantity } },
+              data: { stock: { decrement: item.quantity } },
+            });
+            if (changed.count !== 1) throw new Error("One or more products are no longer available.");
+          }
         }
 
         await db.payment.update({

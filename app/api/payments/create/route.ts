@@ -46,23 +46,30 @@ export async function POST(request: Request) {
 
   const cart = await prisma.cartItem.findMany({
     where: { userId: session.userId },
-    include: { product: { include: { seller: true } } },
+    include: { product: { include: { seller: true } }, variant: true },
   });
   if (!cart.length) return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
 
   for (const item of cart) {
-    if (item.product.seller.status !== "APPROVED" || !item.product.published || item.product.stock < item.quantity) {
+    const variantCount = await prisma.productVariant.count({ where: { productId: item.productId } });
+    const stock = item.variant ? item.variant.stock : item.product.stock;
+    if (item.product.seller.status !== "APPROVED") {
+      return NextResponse.json({ error: "A seller is no longer approved for this product." }, { status: 409 });
+    }
+    if (!item.product.published) {
+      return NextResponse.json({ error: "A product is no longer available." }, { status: 409 });
+    }
+    if (variantCount > 0 && !item.variant) {
+      return NextResponse.json({ error: "Select a product option before checkout." }, { status: 409 });
+    }
+    if (stock < item.quantity) {
       return NextResponse.json({
-        error: item.product.seller.status !== "APPROVED"
-          ? "A seller is no longer approved for this product."
-          : item.product.stock < item.quantity
-            ? "Some products are out of stock."
-            : "A product is no longer available.",
+        error: item.variant ? "A selected product option is out of stock." : "Some products are out of stock.",
       }, { status: 409 });
     }
   }
 
-  const subtotal = cart.reduce((sum: number, item: (typeof cart)[number]) => sum + Number(item.product.price) * item.quantity, 0);
+  const subtotal = cart.reduce((sum: number, item: (typeof cart)[number]) => sum + Number(item.variant?.price ?? item.product.price) * item.quantity, 0);
   const delivery = 3000;
 
   const couponCode = String(body.couponCode || "").trim().toUpperCase();
@@ -105,7 +112,8 @@ export async function POST(request: Request) {
           productId: item.productId,
           sellerId: item.product.sellerId,
           quantity: item.quantity,
-          unitPrice: item.product.price,
+          variantId: item.variantId,
+          unitPrice: item.variant?.price ?? item.product.price,
         })),
       },
       delivery: {

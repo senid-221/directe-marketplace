@@ -1,0 +1,7 @@
+"use client";
+import { useState } from "react";
+import AddToCartButton from "@/components/AddToCartButton";
+import BuyNowButton from "@/components/BuyNowButton";
+type Variant={id:string;name:string;price:number|null;stock:number};
+export default function ProductVariantPicker({productId,variants}:{productId:string;variants:Variant[]}){const [selected,setSelected]=useState<string|null>(variants.length?variants[0].id:null);const active=variants.find(v=>v.id===selected)||null;if(!variants.length)return <div className="productActions"><AddToCartButton productId={productId} className="cta">Add to cart</AddToCartButton><BuyNowButton productId={productId}/></div>;return <div className="variantPicker"><strong>Options</strong><div className="variantOptions">{variants.map(v=><button type="button" key={v.id} className={selected===v.id?"variantOption selected":"variantOption"} onClick={()=>setSelected(v.id)} disabled={v.stock<1}>{v.name}{v.price!==null?" · RWF "+v.price.toLocaleString():""}{v.stock<1?" · Out of stock":""}</button>)}</div><div className="selectedVariantMeta">{active?"Selected: "+active.name+(active.price!==null?" · RWF "+active.price.toLocaleString():"")+" · "+active.stock+" available":"Select an available option."}</div><div className="productActions"><AddToCartButton productId={productId} variantId={active?.id||null} className="cta">Add to cart</AddToCartButton><BuyNowButton productId={productId} variantId={active?.id||null}/></div></div>;
+}

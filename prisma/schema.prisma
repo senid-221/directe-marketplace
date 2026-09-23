@@ -245,16 +245,21 @@ model ProductVariant {
   sku String? @unique
   createdAt DateTime @default(now())
   product Product @relation(fields:[productId], references:[id], onDelete:Cascade)
+  cartItems CartItem[]
+  orderItems OrderItem[]
   @@index([productId])
 }
 model CartItem {
   id String @id @default(cuid())
   userId String
   productId String
+  variantId String?
   quantity Int @default(1)
   user User @relation(fields:[userId], references:[id], onDelete:Cascade)
   product Product @relation(fields:[productId], references:[id])
-  @@unique([userId, productId])
+  variant ProductVariant? @relation(fields:[variantId], references:[id], onDelete:SetNull)
+  @@unique([userId, productId, variantId])
+  @@index([userId])
 }
 model Order {
   id String @id @default(cuid())
@@ -274,11 +279,14 @@ model OrderItem {
   id String @id @default(cuid())
   orderId String
   productId String
+  variantId String?
   sellerId String
   quantity Int
   unitPrice Decimal
   order Order @relation(fields:[orderId], references:[id], onDelete:Cascade)
   product Product @relation(fields:[productId], references:[id])
+  variant ProductVariant? @relation(fields:[variantId], references:[id], onDelete:SetNull)
+  @@index([variantId])
 }
 model Payment {
   id String @id @default(cuid())
