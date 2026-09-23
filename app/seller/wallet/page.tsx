@@ -1,6 +1,9 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
 
 export default async function SellerWalletPage() {
@@ -13,11 +16,10 @@ export default async function SellerWalletPage() {
   });
   if (!seller || seller.status !== "APPROVED") redirect("/seller/apply");
 
-  const wallet = seller.wallet;
-  const available = Number(wallet?.availableBalance || 0);
-  const pending = Number(wallet?.pendingBalance || 0);
-  const totalSales = Number(wallet?.totalSales || 0);
-  const totalPayouts = Number(wallet?.totalPayouts || 0);
+  const available = Number(seller.wallet?.availableBalance || 0);
+  const pending = Number(seller.wallet?.pendingBalance || 0);
+  const totalSales = Number(seller.wallet?.totalSales || 0);
+  const totalPayouts = Number(seller.wallet?.totalPayouts || 0);
   const payoutPhone = seller.payoutPhone || seller.user.phone || "";
   const payoutProvider = seller.payoutProvider || "MTN_MOMO_RWA";
 
@@ -28,16 +30,19 @@ export default async function SellerWalletPage() {
         <div><div className="eyebrow">SELLER CENTER</div><h1>Wallet & payouts</h1><p className="portalSub">Track seller earnings and request MTN Mobile Money payouts.</p></div>
         <Link href="/seller/settings" className="secondaryButton">Payout settings</Link>
       </div>
-
       <div className="stats">
         <div className="stat"><span>Available balance</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
         <div className="stat"><span>Pending payouts</span><strong>RWF {Math.round(pending).toLocaleString()}</strong></div>
         <div className="stat"><span>Total sales credited</span><strong>RWF {Math.round(totalSales).toLocaleString()}</strong></div>
         <div className="stat"><span>Total paid out</span><strong>RWF {Math.round(totalPayouts).toLocaleString()}</strong></div>
       </div>
-
       <div className="walletGrid">
-        <PayoutForm available={available} payoutEnabled={seller.payoutEnabled} payoutPhone={payoutPhone} payoutProvider={payoutProvider} />
+        <div className="panel">
+          <div className="sectionHeader"><div><h2>Request payout</h2><p className="portalSub">Enter the amount you want to withdraw.</p></div></div>
+          {!seller.payoutEnabled
+            ? <div className="walletNotice"><span className="material-symbols-outlined">lock</span><div><strong>Payouts are not enabled</strong><p>Contact the marketplace administrator after your payout details are ready.</p></div></div>
+            : <PayoutForm available={available} payoutPhone={payoutPhone} payoutProvider={payoutProvider} />}
+        </div>
         <div className="panel">
           <div className="sectionHeader"><div><h2>Payout status</h2><p className="portalSub">Payouts are sent only when your seller account is enabled.</p></div></div>
           <div className="walletStatus">
@@ -47,7 +52,6 @@ export default async function SellerWalletPage() {
           </div>
         </div>
       </div>
-
       <div className="panel">
         <div className="sectionHeader"><div><h2>Payout history</h2><p className="portalSub">Your latest payout requests.</p></div></div>
         <div className="walletTable">
@@ -63,60 +67,28 @@ export default async function SellerWalletPage() {
   </main>;
 }
 
-function PayoutForm({ available, payoutEnabled, payoutPhone, payoutProvider }: { available:number; payoutEnabled:boolean; payoutPhone:string; payoutProvider:string }) {
-  return <div className="panel">
-    <div className="sectionHeader"><div><h2>Request payout</h2><p className="portalSub">Enter the amount you want to withdraw.</p></div></div>
-    {!payoutEnabled ? <div className="walletNotice">
-      <span className="material-symbols-outlined">lock</span>
-      <div><strong>Payouts are not enabled</strong><p>Contact the marketplace administrator after your payout details are ready.</p></div>
-    </div> : <form className="walletForm">
-      <PayoutButton available={available} payoutProvider={payoutProvider} payoutPhone={payoutPhone} />
-      <p className="paymentNote">Payout requests use the configured PawaPay account.</p>
-    </form>}
-  </div>;
-}
-
-
-
-"use client";
-
-import { useState } from "react";
-
-function PayoutButton({ available, payoutProvider, payoutPhone }: { available:number; payoutProvider:string; payoutPhone:string }) {
-  const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
+function PayoutForm({ available, payoutPhone, payoutProvider }: { available:number; payoutPhone:string; payoutProvider:string }) {
+  const [amount,setAmount] = useState("");
+  const [message,setMessage] = useState("");
+  const [busy,setBusy] = useState(false);
 
   async function requestPayout() {
-    const value = Number(amount);
-    if (!Number.isFinite(value) || value <= 0 || value > available) {
-      setMessage("Enter a valid payout amount within your available balance.");
-      return;
-    }
-    setBusy(true);
-    setMessage("");
+    const value=Number(amount);
+    if (!Number.isFinite(value) || value <= 0 || value > available) { setMessage("Enter a valid payout amount within your available balance."); return; }
+    if (!payoutPhone) { setMessage("Add a payout phone number first."); return; }
+    setBusy(true); setMessage("");
     try {
-      const response = await fetch("/api/seller/payout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: value }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data?.error || "Could not start payout.");
-      setMessage("Payout request submitted. The status will appear in payout history.");
-      setAmount("");
+      const response=await fetch("/api/seller/payout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:value})});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(data?.error || "Could not start payout.");
       window.location.reload();
-    } catch (error) {
+    } catch(error) {
       setMessage(error instanceof Error ? error.message : "Could not start payout.");
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   }
 
-  return <div>
-    <label>Amount (RWF)<input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
-    <div className="walletFormInfo"><span>Available</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
-    <label>Amount (RWF)<input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
+  return <div className="walletForm">
+    <label>Amount (RWF)<input value={amount} onChange={(e)=>setAmount(e.target.value)} type="number" min="1" max={Math.floor(available)} step="1" placeholder="e.g. 50000" required /></label>
     <div className="walletFormInfo"><span>Available</span><strong>RWF {Math.round(available).toLocaleString()}</strong></div>
     <div className="walletFormInfo"><span>Provider</span><strong>{payoutProvider}</strong></div>
     <div className="walletFormInfo"><span>Phone</span><strong>{payoutPhone || "Not configured"}</strong></div>
